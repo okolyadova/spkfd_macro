@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Financial Market Dashboard · 18 September 2026 Studio Edition</title>
+<title>Financial Market Dashboard · 20 September 2026 Stress · Renins Colors</title>
 <style>
 :root{color-scheme:dark;--bg:#08121f;--panel:#111f30;--line:#26394d;--text:#eef4f9;--muted:#94a9bb;--red:#ff7280;--cyan:#72d7dc;--green:#83d6aa}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -20%,#173551 0,transparent 42%),var(--bg);color:var(--text);font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1390px;margin:auto;padding:34px 28px 56px}.top{display:flex;justify-content:space-between;gap:20px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:22px}.eyebrow,.num{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.top h1{font-size:clamp(24px,3vw,34px);line-height:1.1;letter-spacing:-.035em;margin:8px 0 6px}.subtitle{color:var(--muted);margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{border:1px solid var(--line);background:#16283b;color:var(--text);border-radius:9px;padding:9px 12px}.btn:hover{border-color:var(--cyan)}.datebar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:20px 0 28px;padding:12px 15px;border:1px solid var(--line);border-radius:11px;background:#0f1d2d}.datebar strong{font-size:13px}.status{color:var(--muted);font-size:12px;text-align:right}.module{margin-top:28px}.modulehead{display:flex;align-items:baseline;gap:13px;margin-bottom:12px}.module h2{font-size:18px;letter-spacing:-.02em;margin:0}.module .context{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.card{min-height:151px;background:linear-gradient(150deg,#142438,#101e2e);border:1px solid var(--line);border-radius:12px;padding:17px;display:flex;flex-direction:column;min-width:0}.label{font-size:11px;letter-spacing:.12em;font-weight:750;color:#a9c1d0;text-transform:uppercase}.value{margin:17px 0 5px;font-size:clamp(20px,2.1vw,29px);font-weight:760;letter-spacing:-.04em;white-space:nowrap}.unit{font-size:.53em;letter-spacing:0;color:var(--muted);font-weight:650}.value.stale,.asof{color:var(--red)}.cardbottom{margin-top:auto;min-height:29px}.meta{font-size:11px;color:var(--muted);overflow-wrap:anywhere}.asof{font-size:11px;font-weight:720;margin-top:2px}.changes{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 8px}.change{border:1px solid #345063;background:#132d3b;border-radius:5px;padding:3px 6px;font-size:11px;white-space:nowrap}.change .tag{color:#95b5c6;margin-right:4px}.change.negative{color:var(--red)}.change.positive{color:var(--green)}.error{font-size:11px;color:#efb3b8;margin:3px 0 7px}.foot{border-top:1px solid var(--line);margin-top:32px;padding-top:14px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot a,.help a{color:var(--cyan)}dialog{background:#122236;color:var(--text);border:1px solid #3d566a;border-radius:13px;max-width:520px;width:calc(100% - 28px);padding:22px;box-shadow:0 25px 80px #0009}dialog::backdrop{background:#000a}dialog h3{margin:0 0 8px;font-size:20px}dialog p{color:var(--muted);font-size:13px}.field{display:grid;gap:5px;margin:15px 0}.field input{width:100%;border:1px solid #456075;background:#081725;color:var(--text);padding:10px;border-radius:7px}.dialogactions{display:flex;justify-content:flex-end;gap:9px}.help{font-size:11px;color:var(--muted)}@media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:590px){.wrap{padding:22px 15px 40px}.top{display:block}.actions{justify-content:flex-start;margin-top:17px}.grid{grid-template-columns:1fr}.card{min-height:135px}.datebar{align-items:start;flex-direction:column}.status{text-align:left}.modulehead{flex-wrap:wrap}.value{font-size:27px}}
@@ -163,7 +163,7 @@ body:has(.history-popover:popover-open){overflow:hidden}
 .history-popover .bar-content{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0}
 .history-popover .bar-number{flex:0 0 40px;text-align:right;font-weight:750}
 .history-popover .bar-track{display:block;flex:1 1 60px;max-width:60px;height:9px;text-align:left}
-.history-popover .bar-fill{display:block;height:100%;background:#3679bf;border-radius:3px}
+.history-popover .bar-fill{display:block;height:100%;background:#5b0a85;border-radius:3px}
 .history-popover .forecast-danger td.bar-cell{color:#fff}
 .history-popover .forecast-danger .bar-fill{background:#a9d3ff}
 @media(max-width:590px){.history-popover .bar-number{flex-basis:33px}.history-popover .bar-track{max-width:36px;height:7px}}
@@ -324,6 +324,70 @@ body{background:radial-gradient(circle at 80% -25%,#182d42 0,transparent 48%),#0
 @media(max-width:590px){.history-popover:popover-open{padding-top:43px}.history-popover:popover-open.forecast-popover{width:calc(100vw - 10px);overflow-x:hidden}.history-popover .forecast-table{min-width:570px}.history-popover .forecast-scroll{overflow-x:scroll}.popover-close{position:sticky;display:grid;top:0;margin:-34px 0 5px auto}}
 @media(max-width:590px){.history-popover:popover-open{width:calc(100vw - 12px);padding:10px}.history-popover .adtv-history-table{font-size:14px}.history-popover .forecast-table{font-size:12px}}
 @media(orientation:landscape) and (max-height:500px){.history-popover:popover-open,.history-popover:popover-open.adtv-popover,.history-popover:popover-open.forecast-popover{position:fixed;inset:4px 6px auto 6px;transform:none;width:auto;height:calc(100vh - 8px);max-height:none;padding:8px 12px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.history-popover h3{font-size:15px;margin:0 0 3px}.history-popover p,.history-popover .forecast-note{font-size:10px;line-height:1.2;margin:0 0 4px}.history-popover .chart-title{font-size:11px;margin:2px 0 0}.history-popover .chart-svg{width:100%;height:105px}.history-popover .forecast-scroll{overflow:hidden;padding-bottom:2px}.history-popover .forecast-table{min-width:0;width:100%;font-size:10px}.history-popover .forecast-table th{font-size:9px}.history-popover .forecast-table th,.history-popover .forecast-table td{padding:2px;line-height:1}.history-popover .forecast-table thead tr:last-child th{height:29px}.history-popover .forecast-table .forecast-groups th{padding:3px 2px;font-size:9px}.history-popover .bar-note{font-size:9px;margin-top:3px}.popover-close{top:2px;right:4px;font-size:22px}}
+/* Renaissance Insurance inspired palette: deep purple, vivid lime and clean white surfaces. */
+:root{--bg:#f5f3f7;--panel:#fff;--line:#ded4e5;--text:#2f1740;--muted:#74647f;--cyan:#86f45c;--green:#48a92d;--red:#c53653}
+body{background:radial-gradient(circle at 82% -18%,#e8dbef 0,transparent 38%),#f5f3f7;color:#2f1740}
+.dashboard-header{border-bottom-color:#d8cce0}
+.dashboard-header h1{color:#3d006f}
+.dashboard-header .status{color:#725f7f}
+.dashboard-header .refresh-btn{background:#8cf65a;border-color:#70d746;color:#310058;font-weight:700}
+.dashboard-header .refresh-btn:hover,.dashboard-header .refresh-btn:focus-visible{background:#9dff70;border-color:#5ecb36;color:#260044}
+.module,.module:nth-of-type(1),.module:nth-of-type(2),.module:nth-of-type(3){background:#fff;border-color:#dfd4e6;box-shadow:0 10px 30px #3a006b0d}
+.modulehead,.module:nth-of-type(1) .modulehead,.module:nth-of-type(2) .modulehead,.module:nth-of-type(3) .modulehead{background:#3b006d;border-color:#3b006d;color:#fff}
+.modulehead .num,.module:nth-of-type(3) .num{color:#92ff62}
+.modulehead .context,.module:nth-of-type(3) .context{color:#e4d8eb}
+.module .card,.module:nth-of-type(1) .card,.module:nth-of-type(2) .card,.module:nth-of-type(3) .card{background:#faf8fc;border-color:#e0d7e6;color:#2f1740;box-shadow:none}
+.card .label,.module:nth-of-type(3) .label{color:#654c75}
+.module .value,.module .value.stale,.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#3b006d}
+.module .subvalue,.module:nth-of-type(1) .subvalue,.module:nth-of-type(2) .subvalue{color:#624c70}
+.metric-note,#curaGrid .metric-note,.meta,.asof,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#786985}
+.changes{border-top-color:#ddd2e4}
+.change .tag{color:#786985}
+.change.positive,.module:nth-of-type(3) .change.positive{color:#3b9825}
+.change.negative,.module:nth-of-type(3) .change.negative{color:#c53653}
+.history-trigger,#macroGrid .history-trigger{background:#3b006d;border-color:#5b2581;color:#fff}
+.history-trigger:hover,.history-trigger:focus-visible,#macroGrid .history-trigger:hover,#macroGrid .history-trigger:focus-visible{background:#511183;border-color:#6e3496;color:#fff}
+.forecast-trigger{background:#8cf65a;border-color:#70d746;color:#310058}
+.forecast-trigger:hover,.forecast-trigger:focus-visible{background:#9dff70;border-color:#5ecb36;color:#260044}
+.stress-trigger{background:#fff;border-color:#3b006d;color:#3b006d}
+.stress-trigger:hover,.stress-trigger:focus-visible{background:#eee6f3;border-color:#521180;color:#3b006d}
+.history-popover:popover-open{background:#fff;border-color:#d7c9df;color:#2f1740;box-shadow:0 22px 65px #26004438}
+.history-popover h3,.history-popover .chart-title{color:#3b006d}
+.history-popover p,.history-popover .forecast-note,.history-popover .bar-note{color:#6d5c78}
+.history-popover .forecast-table .forecast-groups th{background:#3b006d;color:#fff;border-bottom-color:#5f2a85}
+.history-popover .forecast-table thead tr:last-child th{background:#eee7f2;color:#3b006d}
+.history-popover .forecast-table tbody td:first-child{background:#e4d9ea;color:#3b006d}
+.history-popover .forecast-table tbody td.adtv-risk,.history-popover .forecast-table tbody td:nth-child(4){color:#c53653}
+.history-popover .open-stress{background:#3b006d;border-color:#3b006d;color:#fff}
+.history-popover .open-stress:hover,.history-popover .open-stress:focus-visible{background:#511183;border-color:#511183}
+.history-popover .bar-fill{background:#5b0a85}
+.forecast-dialog{background:#f1e9f5;border-color:#c9b4d6;color:#3b006d}
+.forecast-dialog h2,.forecast-dialog .forecast-required-volume{color:#3b006d}
+.forecast-dialog .forecast-required-volume strong{color:#c53653}
+.forecast-dialog .forecast-link{background:#8cf65a;border-color:#70d746;color:#310058}
+.forecast-dialog .forecast-link:hover,.forecast-dialog .forecast-link:focus-visible{background:#9dff70;border-color:#5ecb36}
+.foot{border-top-color:#d9cde1;color:#786985}
+.foot a{color:#3b006d}
+/* Final Renins palette refinements */
+.module:nth-of-type(1) .value,
+.module:nth-of-type(1) .value.stale,
+.module:nth-of-type(1) .value.signal-high,
+.module:nth-of-type(1) .value.signal-low,
+.module:nth-of-type(1) .value.price-up,
+.module:nth-of-type(1) .value.price-down,
+.module:nth-of-type(2) .value,
+.module:nth-of-type(2) .value.stale,
+.module:nth-of-type(2) .value.price-up,
+.module:nth-of-type(2) .value.price-down,
+.module:nth-of-type(1) .subvalue,
+.module:nth-of-type(2) .subvalue,
+.module .metric-row .subvalue,
+.module .metric-row:has(.value.price-up) .subvalue,
+.module .metric-row:has(.value.price-down) .subvalue{color:#3b006d}
+.stress-trigger,
+.history-popover .open-stress{background:#8b1e2d;border-color:#8b1e2d;color:#fff}
+.stress-trigger:hover,.stress-trigger:focus-visible,
+.history-popover .open-stress:hover,.history-popover .open-stress:focus-visible{background:#701724;border-color:#701724;color:#fff}
 </style>
 </head>
 <body><main class="wrap">
@@ -379,7 +443,7 @@ function historyControl(label,rows,type){
     content=`<table class="adtv-history-table"><thead><tr><th>Date</th><th>Daily turnover, ₽ mn</th><th>20d ADTV, ₽ mn</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${nice(row.day)}</td>${dataBarCell(row.daily,dailyValues)}${dataBarCell(row.adtv,adtvValues)}</tr>`).join('')}</tbody></table><p class="bar-note">Blue bars compare values within each column; longer means higher.</p>`;
   }else if(type==='chart'){
     const macroLabels=['USD / RUB','EUR / RUB','CAD / USD','Bank of Russia key rate'];
-    const specs=label==='Close share price · RUB / USD'?[['number','RUB close','#345e91',1],['second','USD close','#428b88',2]]:label==='Close price · CAD / USD'?[['number','CAD close','#345e91',1],['second','USD close','#428b88',1]]:label==='Market capitalization'&&rows.some(row=>Number.isFinite(row.second))?[['number','RUB bn','#345e91',1],['second','USD bn','#428b88',1]]:label==='Fed funds target range'?[['number','Lower bound, %','#345e91',2],['second','Upper bound, %','#428b88',2]]:[['number',label,'#345e91',macroLabels.includes(label)?2:1]];
+    const specs=label==='Close share price · RUB / USD'?[['number','RUB close','#5b0a85',1],['second','USD close','#69bd45',2]]:label==='Close price · CAD / USD'?[['number','CAD close','#5b0a85',1],['second','USD close','#69bd45',1]]:label==='Market capitalization'&&rows.some(row=>Number.isFinite(row.second))?[['number','RUB bn','#5b0a85',1],['second','USD bn','#69bd45',1]]:label==='Fed funds target range'?[['number','Lower bound, %','#5b0a85',2],['second','Upper bound, %','#69bd45',2]]:[['number',label,'#5b0a85',macroLabels.includes(label)?2:1]];
     content=specs.map(([key,name,color,decimals])=>chartSvg(rows,key,name,color,decimals)).join('');
   }else{
     content=tablePanels(rows,['Date','Value'],row=>`<tr><td>${nice(row.day)}</td><td>${row.value}${row.asOf&&row.asOf!==row.day?`<small>As of ${nice(row.asOf)}</small>`:''}</td></tr>`);

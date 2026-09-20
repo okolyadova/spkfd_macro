@@ -4,7 +4,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const PORT = Number(process.env.PORT || 8770);
+const PORT = Number(process.env.PORT || 8772);
 const HOST = process.env.HOST || (process.env.RENDER ? '0.0.0.0' : '127.0.0.1');
 const HTML = path.join(__dirname, 'index.html');
 const PRIVATE_TOKEN_FILE = path.join(__dirname, '..', '..', 'work', '.eodhd-token');

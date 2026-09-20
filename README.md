@@ -1,10 +1,10 @@
-# Financial Market Dashboard — studio edition dated 18 September 2026
+# Financial Market Dashboard — stress edition dated 20 September 2026 · Renins colors
 
-This is a separate version of the dashboard. The existing published site is unchanged. The report date shown on the page updates each day when data reloads.
+This separate version applies a Renaissance Insurance inspired palette based on the current renins.ru visual system: deep purple, vivid lime and clean white surfaces. The standard 7-day forecast window includes an **Open Stress-test** button that opens the stress scenario in its own popover. The report date shown on the page updates each day when data reloads.
 
 ## Open locally
 
-On Windows, double-click `start-dashboard.cmd`. It starts the local data service and opens <http://127.0.0.1:8770/>. Keep the computer running while viewing this local address.
+On Windows, double-click `start-dashboard.cmd`. It starts the local data service and opens <http://127.0.0.1:8772/>. Keep the computer running while viewing this local address.
 
 The EODHD token is read from the existing private `work/.eodhd-token` file two folders above this directory, or from the `EODHD_API_TOKEN` environment variable. Never add a token to the HTML or a GitHub repository.
 

@@ -388,6 +388,10 @@ body{background:radial-gradient(circle at 82% -18%,#e8dbef 0,transparent 38%),#f
 .history-popover .open-stress{background:#8b1e2d;border-color:#8b1e2d;color:#fff}
 .stress-trigger:hover,.stress-trigger:focus-visible,
 .history-popover .open-stress:hover,.history-popover .open-stress:focus-visible{background:#701724;border-color:#701724;color:#fff}
+.module:nth-of-type(1) .card,
+.module:nth-of-type(2) .card,
+.module:nth-of-type(3) .card{background:#f7f2fa;border-color:#dfd2e8}
+.module:nth-of-type(3) .card{background:#f3edf7;border-color:#d8c9e3}
 </style>
 </head>
 <body><main class="wrap">
@@ -503,7 +507,8 @@ function renderReni(rows,cbr){
   const buildForecast=baseTurnover=>{const result=[];if(baseDays.length!==20||!Number.isFinite(baseTurnover))return result;const baseline20=baseDays.map(x=>x.turnover),adjusted20=baseDays.map(x=>x.turnover),target=60000000*20;for(let day=shift(current.date,1);result.length<7;day=shift(day,1)){if(!weekday(day))continue;baseline20.shift();baseline20.push(baseTurnover);const baselineAdtv=baseline20.reduce((sum,x)=>sum+x,0)/20;adjusted20.shift();const adjustedRemainder=adjusted20.reduce((sum,x)=>sum+x,0),adjustedBeforeExtra=(adjustedRemainder+baseTurnover)/20,requiredTurnover=Math.max(0,target-adjustedRemainder),extraNeeded=adjustedBeforeExtra<60000000?Math.max(0,requiredTurnover-baseTurnover):0,adjustedDaily=baseTurnover+extraNeeded;adjusted20.push(adjustedDaily);result.push({day,daily:baseTurnover,baselineAdtv,adjustedBeforeExtra,requiredTurnover,extraNeeded,adjustedDaily,adjustedAdtv:(adjustedRemainder+adjustedDaily)/20})}return result};
   const forecastRows=buildForecast(sevenAverage);
   const forecast={baseDate:current?.date,baseTurnover:sevenAverage,rows:forecastRows};
-  const stressTurnover=adtvHistory.length?Math.min(...adtvHistory.map(x=>x.daily).filter(Number.isFinite)):null;
+  const displayedStressTurnovers=adtvHistory.map(x=>x.daily).filter(Number.isFinite);
+  const stressTurnover=displayedStressTurnovers.length?Math.ceil(Math.min(...displayedStressTurnovers)/1e6)*1e6:null;
   const stress={baseDate:current?.date,periodStart:adtvStart,baseTurnover:stressTurnover,rows:buildForecast(stressTurnover)};
   const firstBelow60=forecastRows.find(row=>row.baselineAdtv<60000000&&row.extraNeeded>0),stressBelow60=stress.rows.find(row=>row.baselineAdtv<60000000&&row.extraNeeded>0);if(firstBelow60&&!forecastAlertShown){forecastAlertShown=true;const needs=[firstBelow60?.extraNeeded,stressBelow60?.extraNeeded].filter(Number.isFinite).map(v=>Math.ceil(v/1e6)),low=Math.min(...needs),high=Math.max(...needs);$('forecastRequiredAmount').textContent=low===high?`₽${low} mn`:`₽${low}–${high} mn`;$('forecastAlert').showModal()}
   show('reniGrid',[

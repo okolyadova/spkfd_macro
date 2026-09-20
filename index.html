@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Financial Market Dashboard · 18 September 2026 Studio Edition</title>
+<style>
+:root{color-scheme:dark;--bg:#08121f;--panel:#111f30;--line:#26394d;--text:#eef4f9;--muted:#94a9bb;--red:#ff7280;--cyan:#72d7dc;--green:#83d6aa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% -20%,#173551 0,transparent 42%),var(--bg);color:var(--text);font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1390px;margin:auto;padding:34px 28px 56px}.top{display:flex;justify-content:space-between;gap:20px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:22px}.eyebrow,.num{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}.top h1{font-size:clamp(24px,3vw,34px);line-height:1.1;letter-spacing:-.035em;margin:8px 0 6px}.subtitle{color:var(--muted);margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.btn{border:1px solid var(--line);background:#16283b;color:var(--text);border-radius:9px;padding:9px 12px}.btn:hover{border-color:var(--cyan)}.datebar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:20px 0 28px;padding:12px 15px;border:1px solid var(--line);border-radius:11px;background:#0f1d2d}.datebar strong{font-size:13px}.status{color:var(--muted);font-size:12px;text-align:right}.module{margin-top:28px}.modulehead{display:flex;align-items:baseline;gap:13px;margin-bottom:12px}.module h2{font-size:18px;letter-spacing:-.02em;margin:0}.module .context{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.card{min-height:151px;background:linear-gradient(150deg,#142438,#101e2e);border:1px solid var(--line);border-radius:12px;padding:17px;display:flex;flex-direction:column;min-width:0}.label{font-size:11px;letter-spacing:.12em;font-weight:750;color:#a9c1d0;text-transform:uppercase}.value{margin:17px 0 5px;font-size:clamp(20px,2.1vw,29px);font-weight:760;letter-spacing:-.04em;white-space:nowrap}.unit{font-size:.53em;letter-spacing:0;color:var(--muted);font-weight:650}.value.stale,.asof{color:var(--red)}.cardbottom{margin-top:auto;min-height:29px}.meta{font-size:11px;color:var(--muted);overflow-wrap:anywhere}.asof{font-size:11px;font-weight:720;margin-top:2px}.changes{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 8px}.change{border:1px solid #345063;background:#132d3b;border-radius:5px;padding:3px 6px;font-size:11px;white-space:nowrap}.change .tag{color:#95b5c6;margin-right:4px}.change.negative{color:var(--red)}.change.positive{color:var(--green)}.error{font-size:11px;color:#efb3b8;margin:3px 0 7px}.foot{border-top:1px solid var(--line);margin-top:32px;padding-top:14px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot a,.help a{color:var(--cyan)}dialog{background:#122236;color:var(--text);border:1px solid #3d566a;border-radius:13px;max-width:520px;width:calc(100% - 28px);padding:22px;box-shadow:0 25px 80px #0009}dialog::backdrop{background:#000a}dialog h3{margin:0 0 8px;font-size:20px}dialog p{color:var(--muted);font-size:13px}.field{display:grid;gap:5px;margin:15px 0}.field input{width:100%;border:1px solid #456075;background:#081725;color:var(--text);padding:10px;border-radius:7px}.dialogactions{display:flex;justify-content:flex-end;gap:9px}.help{font-size:11px;color:var(--muted)}@media(max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:590px){.wrap{padding:22px 15px 40px}.top{display:block}.actions{justify-content:flex-start;margin-top:17px}.grid{grid-template-columns:1fr}.card{min-height:135px}.datebar{align-items:start;flex-direction:column}.status{text-align:left}.modulehead{flex-wrap:wrap}.value{font-size:27px}}
+.value,.value.stale{color:var(--text)}
+.value .unit{color:inherit}
+.value.signal-high{color:var(--green)}
+.value.signal-low{color:var(--red)}
+.change .tag{color:inherit}
+.asof{color:var(--muted)}
+.currency{font-size:1em;font-weight:inherit;color:inherit}
+.modulehead{align-items:center;margin:0 0 12px;padding:13px 16px;border:1px solid var(--line);border-radius:11px;min-height:52px}
+.module:nth-of-type(1) .modulehead{background:#16334a;border-color:#285779}
+.module:nth-of-type(2) .modulehead{background:#253349;border-color:#465b79}
+.module:nth-of-type(3) .modulehead{background:#243b3a;border-color:#3b6560}
+.modulehead .num{color:#b2e8ee}.modulehead .context{color:#c0d0dc}
+.module{padding:15px;border:1px solid var(--line);border-radius:15px}
+.module:nth-of-type(1){background:#102c40;border-color:#285779}
+.module:nth-of-type(2){background:#202b3c;border-color:#465b79}
+.module:nth-of-type(3){background:#1b3232;border-color:#3b6560}
+.module .card{background:#0b1725b8}
+/* 17 September layout: compact masthead and a full-width color field per module. */
+.wrap{padding-top:18px}.top{align-items:center;padding-bottom:12px}.top h1{font-size:25px;margin:3px 0 2px}.eyebrow{font-size:10px}.subtitle{font-size:12px}.datebar{margin:12px 0 16px;padding:9px 13px}.module{margin-top:13px}.modulehead{padding:8px 12px;min-height:39px;margin-bottom:9px}.module h2{font-size:16px}.module .card{min-height:154px;padding:14px;background:transparent}.module .grid{gap:9px}.module:nth-of-type(1),.module:nth-of-type(1) .modulehead{background:#202b3c;border-color:#465b79}.module:nth-of-type(1) .card{background:#2b394f;border-color:#52647e}.module:nth-of-type(2),.module:nth-of-type(2) .modulehead{background:#1b3232;border-color:#3b6560}.module:nth-of-type(2) .card{background:#294744;border-color:#46716c}.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#d7dce1;border-color:#e3e7eb;color:#24313d}.module:nth-of-type(3) .card{background:#e7eaed;border-color:#c6cdd3;color:#24313d}.module:nth-of-type(3) .label,.module:nth-of-type(3) .context,.module:nth-of-type(3) .num,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#52616d}.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#24313d}.module:nth-of-type(3) .grid{grid-template-columns:repeat(5,minmax(0,1fr))}.module:nth-of-type(3) .card{min-height:119px;padding:11px}.module:nth-of-type(3) .value{font-size:20px;margin:11px 0 5px}.module:nth-of-type(3) .label{font-size:10px}.module:nth-of-type(3) .change{background:#f3f4f5;border-color:#cbd2d7}.module:nth-of-type(3) .change .tag{color:inherit}.module:nth-of-type(3) .change.positive{color:#237049}.module:nth-of-type(3) .change.negative{color:#b93747}.module .grid.equity-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.metric-note{font-size:11px;color:var(--muted);margin:4px 0 7px}.warning{font-size:11px;font-weight:800;color:var(--red);margin:5px 0}.subvalue{font-size:15px;font-weight:700;color:#aebdc9;margin-top:-2px}.value.neutral{color:#b6c0cb}.module:nth-of-type(1) .value.signal-high{color:var(--green)}.module:nth-of-type(1) .value.signal-low{color:var(--red)}.module:nth-of-type(1) .value.neutral{color:#b6c0cb}.module:nth-of-type(1) .subvalue{color:#aebdc9}.foot{margin-top:18px}@media(max-width:1080px){.module:nth-of-type(3) .grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:700px){.module .grid.equity-grid,.module:nth-of-type(3) .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:590px){.wrap{padding:14px 12px 30px}.top h1{font-size:22px}.top .actions{margin-top:9px}.module{padding:10px}.module .grid.equity-grid,.module:nth-of-type(3) .grid{grid-template-columns:1fr}.module .card{min-height:124px}}
+/* Quieter reference section and larger secondary figures. */
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#293642;border-color:#40505d;color:#cdd8df}
+.module:nth-of-type(3) .card{background:#34434e;border-color:#4b5d69;color:#d3dce2}
+.module:nth-of-type(3) .label,.module:nth-of-type(3) .context,.module:nth-of-type(3) .num,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#b6c3cb}
+.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#d3dce2}
+.module:nth-of-type(3) .change{background:#394752;border-color:#62717a}
+.module:nth-of-type(3) .change.positive{color:#9be3b9}
+.module:nth-of-type(3) .change.negative{color:#ff9da6}
+.module:nth-of-type(2) .grid.equity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.subvalue{font-size:clamp(18px,1.8vw,24px);font-weight:730;color:#aebdc9;margin:0 0 8px;letter-spacing:-.035em;line-height:1.2}
+.subvalue .unit{font-size:.55em;color:inherit;letter-spacing:0}
+.value .subvalue{display:inline;font-size:.78em;vertical-align:baseline}
+@media(max-width:590px){.module:nth-of-type(2) .grid.equity-grid{grid-template-columns:1fr}}
+.metric-row{display:flex;align-items:baseline;gap:10px;white-space:nowrap;min-width:0;margin:13px 0 8px}
+.metric-row .value{margin:0;font-size:clamp(18px,1.9vw,27px);flex:0 0 auto}
+.metric-row .subvalue{margin:0;font-size:clamp(16px,1.65vw,23px);flex:0 0 auto;line-height:1.2}
+.module:nth-of-type(2) .metric-row .subvalue{font-size:clamp(18px,1.9vw,27px);font-weight:760}
+.module:nth-of-type(2) .metric-row .subvalue{color:#eef4f9}
+.module:nth-of-type(1) .value .unit,.module:nth-of-type(1) .subvalue .unit,.module:nth-of-type(2) .value .unit,.module:nth-of-type(2) .subvalue .unit{font-size:clamp(16px,1.65vw,23px)}
+.change{font-size:14px;font-weight:650;padding:3px 7px}
+.loading-card .loading-line{height:20px;width:68%;border-radius:6px;background:#ffffff20;margin:17px 0 10px}
+.loading-card .loading-caption{font-size:11px;color:var(--muted);margin-top:auto}
+.module:nth-of-type(3) .loading-card .loading-line{background:#ffffff19}
+@media(max-width:1100px){.module:nth-of-type(1) .grid.equity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.module:nth-of-type(1) .grid.equity-grid .card:last-child{grid-column:span 2}}
+@media(max-width:700px){.module:nth-of-type(1) .grid.equity-grid,.module:nth-of-type(2) .grid.equity-grid{grid-template-columns:1fr}.module:nth-of-type(1) .grid.equity-grid .card:last-child{grid-column:auto}}
+.datebar strong{font-size:18px}
+.module h2{font-size:21px}
+.card{position:relative}
+.card .label{padding-right:64px}
+.history-wrap{position:absolute;right:12px;top:11px;z-index:3}
+.history-trigger{font-size:11px;color:#b7dbe0;border:1px solid #6b8594;background:#ffffff0d;border-radius:5px;padding:3px 6px;cursor:pointer}
+.history-trigger:hover,.history-trigger:focus-visible{color:#fff;border-color:#91c4cf}
+.history-popover{display:none;position:absolute;right:0;top:24px;width:min(375px,calc(100vw - 34px));max-height:390px;overflow:auto;background:#142433;border:1px solid #69849a;border-radius:10px;box-shadow:0 16px 36px #0009;padding:10px;color:#e6f0f4;z-index:5}
+.history-wrap.open .history-popover{display:block}
+@media(hover:hover){.history-wrap:hover .history-popover{display:block}}
+.history-popover h3{font-size:12px;margin:0 0 6px;color:#d7e9ed}
+.history-popover p{font-size:10px;color:#a6bac6;margin:0 0 7px}
+.history-popover table{border-collapse:collapse;width:100%;font-size:11px}
+.history-popover th,.history-popover td{padding:5px 4px;border-top:1px solid #334b5a;text-align:left;vertical-align:top}
+.history-popover th:last-child,.history-popover td:last-child{text-align:right}
+.history-popover small{display:block;color:#ff9ba5;font-size:10px}
+.history-popover .unit{font-size:1em;color:inherit}
+.module:nth-of-type(3) .history-trigger{color:#d8e5eb}
+@media(max-width:700px){.history-popover{right:-4px}}
+.card:has(.history-wrap:hover){z-index:1000}
+.card:has(.history-wrap.open){z-index:100000}
+.module:has(.history-wrap.open){position:relative;z-index:100000}
+.history-wrap{z-index:1001}
+.history-trigger{font-size:12px;font-weight:800;color:#142534;background:#94d8e2;border:1px solid #aee8ef;padding:5px 9px;box-shadow:0 2px 8px #0003}
+.history-trigger:hover,.history-trigger:focus-visible{color:#07141f;background:#b6edf2;border-color:#d6fbff}
+.module:nth-of-type(3) .history-trigger{color:#142534}
+.history-popover{position:fixed;left:50vw;right:auto;top:70px;bottom:auto;transform:translateX(-50%);width:min(970px,calc(100vw - 28px));max-height:none;overflow:visible;background:#e2e6ea;border:1px solid #b5c0c8;border-radius:12px;box-shadow:0 22px 55px #000b;color:#1e2d38;padding:18px;z-index:1002}
+.history-popover h3{font-size:21px;color:#1d2b37;margin:0 0 7px}
+.history-popover p{font-size:16px;color:#52616b;margin:0 0 12px}
+.history-popover table{font-size:17px}
+.history-popover th,.history-popover td{border-top:1px solid #c2cbd2;padding:5px 7px}
+.history-popover small{color:#a73542;font-size:13px}
+.history-popover .unit{font-size:1em;color:inherit}
+.history-popover .currency{font-size:1em}
+.history-popover .history-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.history-popover .history-panels:has(table:only-child){grid-template-columns:1fr}
+.history-popover .history-panels table{font-size:16px}
+.history-popover .history-panels th{font-size:14px;line-height:1.15}
+.history-popover .history-panels th:nth-child(n+2),.history-popover .history-panels td:nth-child(n+2){text-align:right;white-space:nowrap}
+.history-popover.adtv-popover{max-height:calc(100vh - 12px);overflow-y:auto}
+.history-popover .adtv-history-table{font-size:16px}
+.history-popover .adtv-history-table th,.history-popover .adtv-history-table td{padding:2px 8px;line-height:1.1}
+.history-popover .adtv-history-table th:nth-child(n+2),.history-popover .adtv-history-table td:nth-child(n+2){text-align:right}
+.history-popover .adtv-history-table small{display:inline;margin-left:5px;font-size:12px}
+.history-popover .chart-scroll{overflow-x:auto;overflow-y:hidden}
+.history-popover .chart-title{font-size:18px;font-weight:750;margin:9px 0 2px}
+.history-popover .chart-svg{display:block;max-width:none}
+.history-popover .forecast-note{font-size:15px;color:#394b57}
+.forecast-trigger{background:#d5c692;border-color:#eadcab}
+.forecast-trigger:hover,.forecast-trigger:focus-visible{background:#eadba7;border-color:#fff0c5}
+.forecast-wrap{right:112px}
+@media(max-width:700px){.history-popover{width:calc(100vw - 18px);padding:11px;overflow-x:auto}.history-popover .history-panels{min-width:860px}.history-popover h3{font-size:19px}.history-popover p{font-size:14px}.history-popover table{font-size:15px}.forecast-wrap{right:107px}}
+/* Native popovers occupy the browser top layer, above every card and button. */
+.history-wrap:hover .history-popover,.history-wrap.open .history-popover{display:none}
+.history-popover:popover-open{display:block!important;background:#e2e6ea;opacity:1;isolation:isolate;z-index:2147483647;margin:0;inset:auto;left:50vw;transform:translateX(-50%);width:min(760px,calc(100vw - 20px));max-height:calc(100vh - 12px);overflow-y:auto;overflow-x:hidden}
+body:has(.history-popover:popover-open){overflow:hidden}
+.history-popover:popover-open.adtv-popover,.history-popover:popover-open.forecast-popover{width:min(490px,calc(100vw - 20px))}
+.history-popover:popover-open.forecast-popover{width:min(690px,calc(100vw - 20px))}
+.history-popover .chart-scroll{overflow:hidden}
+.history-popover .chart-svg{width:100%;height:auto}
+.history-popover{padding-top:42px}
+.popover-close{position:absolute;top:8px;right:10px;display:grid;place-items:center;width:30px;height:30px;padding:0;border:0;background:transparent;color:#263743;font-size:28px;font-weight:400;line-height:1;z-index:2}
+.popover-close:hover,.popover-close:focus-visible{background:transparent;color:#a82f49}
+.history-popover .adtv-history-table,.history-popover .forecast-table{table-layout:fixed;width:100%;font-size:16px}
+.history-popover .adtv-history-table th,.history-popover .adtv-history-table td,.history-popover .forecast-table th,.history-popover .forecast-table td{width:33.33%;padding:2px 4px;line-height:1.1;white-space:normal}
+.history-popover .forecast-table th,.history-popover .forecast-table td{width:auto}
+.history-popover .forecast-table{width:100%;margin:0 auto;font-size:12px}
+.history-popover .forecast-table th,.history-popover .forecast-table td{padding:3px 2px;line-height:1.05}
+.history-popover .forecast-table th{font-size:11px;font-weight:700}
+.history-popover .forecast-table th:first-child,.history-popover .forecast-table td:first-child{width:12%}
+.history-popover .forecast-table th:nth-child(2),.history-popover .forecast-table td:nth-child(2){width:17%}
+.history-popover .forecast-table th:nth-child(3),.history-popover .forecast-table td:nth-child(3){width:17%}
+.history-popover .forecast-table th:nth-child(4),.history-popover .forecast-table td:nth-child(4){width:17%}
+.history-popover .forecast-table th:nth-child(5),.history-popover .forecast-table td:nth-child(5){width:19%}
+.history-popover .forecast-table th:nth-child(6),.history-popover .forecast-table td:nth-child(6){width:18%}
+.history-popover .forecast-table .forecast-groups th{padding:5px 3px;background:#d5dce1;color:#334753;font-size:11px;letter-spacing:.07em;text-transform:uppercase;border-bottom:1px solid #b8c3ca}
+.history-popover .forecast-table .forecast-groups th:last-child{border-left:1px solid #9eaab2}
+.history-popover .forecast-table thead tr:last-child th{height:43px;vertical-align:middle}
+.history-popover .forecast-table thead tr:last-child th:nth-child(3),.history-popover .forecast-table tbody td:nth-child(4){border-left:1px solid #9eaab2}
+.history-popover .forecast-table tbody td{background:#fff;color:#293944}
+.history-popover .forecast-table tbody td:first-child{background:#d9dee2;color:#344650;font-weight:650}
+.history-popover .forecast-table tbody td:nth-child(4){color:#bd3048;font-weight:800}
+.history-popover .forecast-table tbody td.adtv-risk{background:#fff;color:#bd3048;font-weight:800}
+.history-popover .forecast-table th .table-unit{display:block;font-weight:400;margin-top:2px}
+.history-popover .forecast-table td:nth-child(4){color:#bd3048;font-weight:800}
+.history-popover .forecast-table tr.forecast-danger td:nth-child(4){color:#fff}
+.history-popover .forecast-scroll{width:100%;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;overscroll-behavior-inline:contain;scrollbar-gutter:stable}
+.history-popover.forecast-popover{padding-top:18px}
+.history-popover .forecast-popover-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-right:36px;margin:0 0 8px}
+.history-popover .forecast-popover-head h3{margin:0;padding:2px 0 0;line-height:1.15}
+.history-popover .stress-link-row{display:flex;flex:0 0 auto;margin:0}
+.history-popover .open-stress{border:1px solid #a85f68;border-radius:7px;background:#8f4652;color:#fff;padding:6px 12px;font-size:12px;font-weight:650;text-align:center}
+.history-popover .open-stress:hover,.history-popover .open-stress:focus-visible{background:#a55360;border-color:#c97984}
+.history-popover .adtv-history-table small{display:block;margin:0;font-size:10px}
+.adtv-card .forecast-wrap{right:12px;top:47px}
+.adtv-card .stress-wrap{right:12px;top:80px}
+.adtv-card .metric-row .subvalue{font-size:clamp(14px,1.35vw,18px)}
+.adtv-card .metric-row .subvalue .unit{font-size:inherit}
+.adtv-card .label{min-height:53px}
+.adtv-card .changes{padding-right:102px}
+.metric-note{font-size:18px;font-weight:750;line-height:1.25;color:#eaf1f5;margin:6px 0 9px}
+#curaGrid .metric-note{color:#eaf1f5}
+#macroGrid .history-wrap{top:43px}
+#macroGrid .card .label{padding-right:0;min-height:38px}
+#macroGrid .card{padding-bottom:38px}
+.history-popover .adtv-history-table th,.history-popover .adtv-history-table td,.history-popover .forecast-table th,.history-popover .forecast-table td{text-align:center!important}
+.history-popover .forecast-table tr.forecast-warning,.history-popover .forecast-table tr.forecast-danger{background:transparent;color:inherit}
+.history-popover .adtv-history-table,.history-popover .forecast-table{background:#f7f8fa}
+.history-popover .bar-note{font-size:12px;margin:5px 0 0;color:#455661}
+.history-popover td.bar-cell{color:#292e31}
+.history-popover .bar-content{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0}
+.history-popover .bar-number{flex:0 0 40px;text-align:right;font-weight:750}
+.history-popover .bar-track{display:block;flex:1 1 60px;max-width:60px;height:9px;text-align:left}
+.history-popover .bar-fill{display:block;height:100%;background:#3679bf;border-radius:3px}
+.history-popover .forecast-danger td.bar-cell{color:#fff}
+.history-popover .forecast-danger .bar-fill{background:#a9d3ff}
+@media(max-width:590px){.history-popover .bar-number{flex-basis:33px}.history-popover .bar-track{max-width:36px;height:7px}}
+.forecast-dialog{width:min(680px,calc(100vw - 30px));max-width:none;border:1px solid #f3acbb;border-radius:15px;background:#f2e4e8;color:#40232e;padding:27px 30px 25px;box-shadow:0 22px 70px #000a;text-align:center}
+.forecast-dialog::backdrop{background:#07111ccc}
+.forecast-dialog h2{font-size:21px;line-height:1.25;margin:23px 0 18px;color:#612737}
+.forecast-dialog h2 span{display:block}
+.forecast-dialog .forecast-required-volume{margin-top:16px;color:#612737;font-weight:600}
+.forecast-dialog .forecast-required-volume strong{color:#c51f3e;font-weight:850}
+.forecast-dialog .dialog-close{position:absolute;top:8px;right:10px;border:0;background:transparent;color:#612737;font-size:27px;font-weight:700;line-height:1;padding:3px 8px}
+.forecast-dialog .dialog-close:focus,.forecast-dialog .dialog-close:focus-visible{outline:0;box-shadow:none;border:0}
+.forecast-dialog .dialog-close:hover,.forecast-dialog .dialog-close:focus-visible{color:#a82f49}
+.forecast-dialog .forecast-link{border:1px solid #b44a62;border-radius:8px;background:#a83e58;color:white;font-size:15px;font-weight:800;padding:9px 16px}
+.forecast-dialog .forecast-link:hover,.forecast-dialog .forecast-link:focus-visible{background:#8d2e45}
+@media(max-width:590px){.forecast-dialog{padding:24px 16px 20px}.forecast-dialog h2{font-size:clamp(14px,3.8vw,18px);margin-top:22px}}
+.wrap{padding-top:10px;padding-bottom:20px}
+.dashboard-header{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;min-height:48px;padding:0 2px 8px;border-bottom:1px solid var(--line)}
+.dashboard-header h1{font-size:clamp(18px,1.85vw,25px);font-weight:800;line-height:1.1;letter-spacing:-.025em;margin:0;white-space:nowrap}
+.dashboard-header .status{font-size:12px;text-align:center;white-space:nowrap}
+.dashboard-header .actions{justify-self:end;display:flex;gap:7px}
+.dashboard-header .refresh-btn{background:#25764c;border-color:#4fb67c;color:#fff;font-weight:800;padding:7px 13px;white-space:nowrap}
+.dashboard-header .refresh-btn:hover,.dashboard-header .refresh-btn:focus-visible{background:#32965f;border-color:#82dba5}
+.dashboard-header .refresh-btn:disabled{opacity:.65;cursor:wait}
+.module{margin-top:9px;padding:11px}
+.modulehead{padding:6px 10px;min-height:34px;margin-bottom:7px}
+.module .grid{gap:7px}
+.module .card{min-height:143px;padding:11px}
+.module:nth-of-type(3) .card{min-height:108px;padding:9px 10px}
+.module:nth-of-type(3) .value{margin:7px 0 3px}
+.metric-row{margin:9px 0 6px}
+.changes{margin:4px 0 6px}
+.foot{margin-top:12px;padding-top:8px}
+@media(max-width:900px){.dashboard-header{grid-template-columns:1fr auto;gap:5px 10px}.dashboard-header h1{white-space:normal;grid-column:1}.dashboard-header .status{grid-column:1;grid-row:2;text-align:left}.dashboard-header .actions{grid-column:2;grid-row:1 / span 2}}
+@media(max-width:590px){.dashboard-header h1{font-size:18px}.dashboard-header .status{font-size:11px}.dashboard-header .refresh-btn{padding:7px 9px}.module .card{min-height:124px}}
+@media(min-width:1100px){.module h2{font-size:18px}.modulehead{padding:4px 10px;min-height:32px}.module .card{padding:9px}.adtv-card .label{min-height:40px}.metric-row{margin:6px 0 4px}.module .value{margin-top:9px}.metric-note{margin:3px 0 5px}.changes{margin:2px 0 4px}#macroGrid .card .label{min-height:30px}#macroGrid .history-wrap{top:36px}#macroGrid .card{padding:9px 10px 28px}}
+@media(min-width:1100px){.wrap{padding-bottom:0}.module{padding:8px}.foot{margin-top:8px}}
+.dashboard-header{margin-bottom:8px}
+.module + .module{margin-top:20px}
+.modulehead{margin-bottom:11px}
+.changes{margin: auto 0 4px;gap:6px 14px;align-items:center}
+.change{border:0;background:transparent;border-radius:0;padding:0;font-size:14px}
+.cardbottom{margin-top:0}
+.metric-note,#curaGrid .metric-note{font-size:11px;font-weight:400;line-height:1.4;color:var(--muted);margin:4px 0 6px}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#cbd3d9;border-color:#aebbc4;color:#263642}
+.module:nth-of-type(3) .card{background:#e8ecef;border-color:#b8c4cc;color:#263642}
+.module:nth-of-type(3) .label,.module:nth-of-type(3) .context,.module:nth-of-type(3) .num,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#52616c}
+.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#263642}
+.module:nth-of-type(3) .change{border:0;background:transparent;color:#263642}
+.module:nth-of-type(3) .change.positive{color:#24774e}
+.module:nth-of-type(3) .change.negative{color:#bd394c}
+.dashboard-header h1{font-weight:400}
+.adtv-card .label{min-height:0}
+.adtv-card .metric-row{margin:3px 0 11px}
+.adtv-card .warning{margin:0 0 7px}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#9da9b2;border-color:#81909a}
+.module:nth-of-type(3) .card{background:#bac4ca;border-color:#93a2ab}
+/* 18 September palette: three restrained greys, with Macro as the darkest reference module. */
+:root{--green:#4af095;--red:#ff7580;--muted:#c4cdd3}
+.dashboard-header{margin-bottom:22px}
+.module:nth-of-type(1),.module:nth-of-type(1) .modulehead{background:#3c4851;border-color:#66747e;color:#f2f5f6}
+.module:nth-of-type(1) .card{background:#4c5963;border-color:#71808a}
+.module:nth-of-type(2),.module:nth-of-type(2) .modulehead{background:#505b63;border-color:#74818a;color:#f2f5f6}
+.module:nth-of-type(2) .card{background:#606d75;border-color:#82919a}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#303840;border-color:#53606a;color:#e8edf0}
+.module:nth-of-type(3) .card{background:#404b54;border-color:#62717c;color:#f0f4f6}
+.module:nth-of-type(3) .label,.module:nth-of-type(3) .context,.module:nth-of-type(3) .num,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#bdc8cf}
+.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#f0f4f6}
+.module:nth-of-type(3) .change.positive,.change.positive{color:#4af095}
+.module:nth-of-type(3) .change.negative,.change.negative{color:#ff7580}
+#macroGrid .history-trigger{color:#e5e9ec;background:#65717a;border-color:#87939b}
+#macroGrid .history-trigger:hover,#macroGrid .history-trigger:focus-visible{background:#75818a;border-color:#aab4ba;color:#fff}
+.module:nth-of-type(1) .value.price-up,.module:nth-of-type(2) .value.price-up{color:#4af095}
+.module:nth-of-type(1) .value.price-down,.module:nth-of-type(2) .value.price-down{color:#ff7580}
+.module .metric-row:has(.value.price-up) .subvalue{color:#4af095}
+.module .metric-row:has(.value.price-down) .subvalue{color:#ff7580}
+.module .card{min-height:166px}
+.module:nth-of-type(3) .card{min-height:130px}
+.metric-row{margin-bottom:13px}
+.adtv-card .metric-row{margin-bottom:13px}
+.metric-note,#curaGrid .metric-note{margin-bottom:11px}
+.changes{padding-top:10px;border-top:1px solid #ffffff36;margin:auto 0 8px;gap:8px 16px}
+.changes .change + .change::before{content:'/';color:#c6d0d6;font-weight:400;margin-right:14px}
+.cardbottom{margin-top:8px}
+.module:nth-of-type(3) .cardbottom{margin-top:7px}
+/* Lighter grey revision; figures stay white and colour is reserved for changes. */
+.module:nth-of-type(1),.module:nth-of-type(1) .modulehead{background:#84919a;border-color:#a8b3ba}
+.module:nth-of-type(1) .card{background:#677680;border-color:#91a0a9}
+.module:nth-of-type(2),.module:nth-of-type(2) .modulehead{background:#99a5ad;border-color:#b5bec4}
+.module:nth-of-type(2) .card{background:#78868f;border-color:#a1aeb6}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#5a6872;border-color:#83939d;color:#fff}
+.module:nth-of-type(3) .card{background:#667680;border-color:#899aa4;color:#fff}
+.module:nth-of-type(3) .label,.module:nth-of-type(3) .context,.module:nth-of-type(3) .num,.module:nth-of-type(3) .meta,.module:nth-of-type(3) .asof{color:#d8e0e5}
+.module:nth-of-type(1) .value,.module:nth-of-type(1) .value.stale,.module:nth-of-type(1) .value.signal-high,.module:nth-of-type(1) .value.signal-low,.module:nth-of-type(1) .value.price-up,.module:nth-of-type(1) .value.price-down,.module:nth-of-type(2) .value,.module:nth-of-type(2) .value.stale,.module:nth-of-type(2) .value.price-up,.module:nth-of-type(2) .value.price-down,.module:nth-of-type(3) .value,.module:nth-of-type(3) .value.stale{color:#fff}
+.module:nth-of-type(1) .value.neutral{color:#fff}
+.module .metric-row:has(.value.price-up) .subvalue,.module .metric-row:has(.value.price-down) .subvalue,.module .metric-row .subvalue{color:#fff}
+.change.positive,.module:nth-of-type(3) .change.positive{color:#70f4a4}
+.change.negative,.module:nth-of-type(3) .change.negative{color:#ff8590}
+#macroGrid .history-trigger{background:#87949d;border-color:#aab5bc;color:#fff}
+#macroGrid .history-trigger:hover,#macroGrid .history-trigger:focus-visible{background:#9ba7af;border-color:#c6ced3;color:#fff}
+.btn,.history-trigger,.forecast-trigger,.forecast-dialog .forecast-link{font-weight:400}
+/* Restored dashboard palette: navy, green and muted grey. */
+.module:nth-of-type(1),.module:nth-of-type(1) .modulehead{background:#202b3c;border-color:#465b79;color:#f2f6f9}
+.module:nth-of-type(1) .card{background:#2b394f;border-color:#52647e}
+.module:nth-of-type(2),.module:nth-of-type(2) .modulehead{background:#1b3232;border-color:#3b6560;color:#f2f6f9}
+.module:nth-of-type(2) .card{background:#294744;border-color:#46716c}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#56636d;border-color:#74838e;color:#f2f6f9}
+.module:nth-of-type(3) .card{background:#66747e;border-color:#8998a1;color:#fff}
+/* Studio edition: quieter controls, clearer type hierarchy and consistent spacing. */
+body{background:radial-gradient(circle at 80% -25%,#182d42 0,transparent 48%),#0c1723}
+.wrap{max-width:1400px;padding:21px 26px 35px}
+.dashboard-header{min-height:55px;margin-bottom:23px;padding:0 2px 13px;border-bottom-color:#ffffff26}
+.dashboard-header h1{font-size:clamp(21px,2vw,28px);font-weight:400;letter-spacing:-.035em}
+.dashboard-header .status{font-size:12px;color:#bdcbd4}
+.dashboard-header .refresh-btn{font-weight:600;border-radius:8px;box-shadow:none}
+.module{padding:15px;border-radius:14px;box-shadow:0 10px 25px #0002}
+.module + .module{margin-top:23px}
+.module:nth-of-type(1),.module:nth-of-type(1) .modulehead{background:#202d3d}
+.module:nth-of-type(2),.module:nth-of-type(2) .modulehead{background:#1d3634}
+.module:nth-of-type(3),.module:nth-of-type(3) .modulehead{background:#53616c}
+.module:nth-of-type(1) .modulehead,.module:nth-of-type(2) .modulehead,.module:nth-of-type(3) .modulehead{background:transparent;border:0;border-bottom:1px solid #ffffff33;border-radius:0;min-height:0;margin-bottom:13px;padding:1px 2px 11px}
+.module h2{font-size:20px;font-weight:650;letter-spacing:-.025em}
+.modulehead .num{font-size:10px;font-weight:700;letter-spacing:.14em;color:#d9e7ee}
+.modulehead .context{font-size:11px;color:#d1dce1}
+.module .grid{gap:12px}
+.module .card{min-height:153px;border-radius:10px;padding:14px 15px;box-shadow:0 2px 0 #0001}
+.module:nth-of-type(1) .card{background:#2a3a4e;border-color:#4a6178}
+.module:nth-of-type(2) .card{background:#2b4946;border-color:#476b67}
+.module:nth-of-type(3) .card{background:#65747e;border-color:#8898a2;min-height:126px}
+.card .label{font-size:11px;font-weight:650;letter-spacing:.08em;line-height:1.3;color:#cfdae0}
+.module:nth-of-type(3) .label{color:#e2e9ec}
+.metric-row{margin:10px 0 13px}
+.adtv-card .metric-row{margin:4px 0 13px}
+.module .value{font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+.module .subvalue{font-weight:600;font-variant-numeric:tabular-nums}
+.metric-note,#curaGrid .metric-note{font-size:12px;color:#d7e1e6;margin:1px 0 10px}
+.changes{border-top:1px solid #ffffff2b;padding-top:11px;margin:auto 0 8px;gap:7px 13px}
+.change{font-size:14px;font-weight:650;font-variant-numeric:tabular-nums}
+.changes .change + .change::before{color:#d0d9de;margin-right:12px}
+.cardbottom{margin-top:7px}
+.meta,.asof{font-size:11px;line-height:1.35;color:#c0ced5}
+.asof{color:#dce6eb;font-weight:650}
+.history-wrap{right:14px;top:13px}
+.adtv-card .forecast-wrap{right:14px;top:46px}
+.adtv-card .stress-wrap{right:14px;top:76px}
+.adtv-card .history-wrap{width:88px;right:14px}
+.adtv-card .history-trigger{width:100%;text-align:center}
+.module .adtv-card{min-height:184px}
+.adtv-card .changes{padding-right:102px;margin-top:34px}
+.history-trigger,#macroGrid .history-trigger{font-size:11px;font-weight:500;padding:4px 8px;border-radius:7px;background:#ffffff20;color:#eef5f8;border:1px solid #ffffff57;box-shadow:none}
+.history-trigger:hover,.history-trigger:focus-visible,#macroGrid .history-trigger:hover,#macroGrid .history-trigger:focus-visible{background:#ffffff35;border-color:#ffffff8c;color:#fff}
+.forecast-trigger{background:#d1be8952;border-color:#e2cf9c8c;color:#fff}
+.forecast-trigger:hover,.forecast-trigger:focus-visible{background:#d1be8978;border-color:#f2dfa9;color:#fff}
+.stress-trigger{background:#a75f6352;border-color:#d291958c;color:#fff}
+.stress-trigger:hover,.stress-trigger:focus-visible{background:#a75f6378;border-color:#e7adb1;color:#fff}
+.foot{margin-top:22px;border-top-color:#ffffff26;color:#aebfc9}
+@media(max-width:820px){.module:nth-of-type(1) .grid.equity-grid,.module:nth-of-type(2) .grid.equity-grid{grid-template-columns:1fr}.module:nth-of-type(1) .grid.equity-grid .card:last-child{grid-column:auto}}
+@media(max-width:590px){.wrap{padding:15px 12px 28px}.dashboard-header{margin-bottom:17px}.module{padding:12px}.module .card{min-height:145px}.modulehead{gap:8px}.module h2{font-size:18px}.modulehead .context{flex-basis:100%}}
+@media(max-width:590px){.history-popover:popover-open{padding-top:43px}.history-popover:popover-open.forecast-popover{width:calc(100vw - 10px);overflow-x:hidden}.history-popover .forecast-table{min-width:570px}.history-popover .forecast-scroll{overflow-x:scroll}.popover-close{position:sticky;display:grid;top:0;margin:-34px 0 5px auto}}
+@media(max-width:590px){.history-popover:popover-open{width:calc(100vw - 12px);padding:10px}.history-popover .adtv-history-table{font-size:14px}.history-popover .forecast-table{font-size:12px}}
+@media(orientation:landscape) and (max-height:500px){.history-popover:popover-open,.history-popover:popover-open.adtv-popover,.history-popover:popover-open.forecast-popover{position:fixed;inset:4px 6px auto 6px;transform:none;width:auto;height:calc(100vh - 8px);max-height:none;padding:8px 12px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.history-popover h3{font-size:15px;margin:0 0 3px}.history-popover p,.history-popover .forecast-note{font-size:10px;line-height:1.2;margin:0 0 4px}.history-popover .chart-title{font-size:11px;margin:2px 0 0}.history-popover .chart-svg{width:100%;height:105px}.history-popover .forecast-scroll{overflow:hidden;padding-bottom:2px}.history-popover .forecast-table{min-width:0;width:100%;font-size:10px}.history-popover .forecast-table th{font-size:9px}.history-popover .forecast-table th,.history-popover .forecast-table td{padding:2px;line-height:1}.history-popover .forecast-table thead tr:last-child th{height:29px}.history-popover .forecast-table .forecast-groups th{padding:3px 2px;font-size:9px}.history-popover .bar-note{font-size:9px;margin-top:3px}.popover-close{top:2px;right:4px;font-size:22px}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="dashboard-header"><h1 id="dashboardDate">Financial Dashboard as of —</h1><span class="status" id="status" role="status">Preparing data…</span><div class="actions"><button class="btn" id="settingsBtn">Data access</button><button class="btn refresh-btn" id="refreshBtn">Refresh data</button></div></header>
+<dialog class="forecast-dialog" id="forecastAlert" aria-labelledby="forecastAlertTitle"><button class="dialog-close" id="closeForecastAlert" type="button" aria-label="Close forecast alert">×</button><h2 id="forecastAlertTitle"><span>High risk of breach of 20d ADTV covenant (₽50mn)</span><span>as forecasted value goes below ₽60mn,</span><span>within next 7 trading days!</span><span class="forecast-required-volume">Additional trading volume required is <strong id="forecastRequiredAmount">—</strong></span></h2><button class="forecast-link" id="showForecast" type="button">See 7 days forecast</button></dialog>
+<section class="module" aria-labelledby="reniTitle"><div class="modulehead"><span class="num">Module 01</span><h2 id="reniTitle">Renaissance Insurance</h2><span class="context">RENI · MOEX</span></div><div class="grid equity-grid" id="reniGrid"></div></section>
+<section class="module" aria-labelledby="curaTitle"><div class="modulehead"><span class="num">Module 02</span><h2 id="curaTitle">Curaleaf Holdings</h2><span class="context">CURA.TO · TSX</span></div><div class="grid equity-grid" id="curaGrid"></div></section>
+<section class="module" aria-labelledby="macroTitle"><div class="modulehead"><span class="num">Module 03</span><h2 id="macroTitle">Macro</h2><span class="context">Reference rates and policy settings</span></div><div class="grid" id="macroGrid"></div></section>
+<footer class="foot"><span>Reference rates and exchange close prices may publish at different times. Earlier observations show an “As of” date.</span><span><a href="https://www.cbr.ru/development/sxml/" target="_blank" rel="noopener">Bank of Russia</a> · <a href="https://www.moex.com/files/4be999zbzp80bx2bgmwayrtyx0" target="_blank" rel="noopener">MOEX ISS</a> · <a href="https://www.bankofcanada.ca/valet/docs/" target="_blank" rel="noopener">Bank of Canada</a> · <a href="https://fred.stlouisfed.org/series/DFEDTARU" target="_blank" rel="noopener">FRED / Federal Reserve</a> · <a href="https://eodhd.com/financial-apis/stock-etfs-fundamental-data-feeds" target="_blank" rel="noopener">EODHD</a> · <a href="https://www.sec.gov/Archives/edgar/data/1756770/000175677025000030/q225-exx992xfsandmda.htm" target="_blank" rel="noopener">Curaleaf 2025 filing</a> · <a href="https://www.sec.gov/Archives/edgar/data/1756770/000110465926098176/tm2623363d3_ex1-1.htm" target="_blank" rel="noopener">Curaleaf 2026 filing</a></span></footer>
+</main><dialog id="settings"><h3>Curaleaf data access</h3><p>Enter an EODHD API token for TSX close prices and reported shares outstanding. Your token stays in this browser tab and is sent directly to EODHD. Fundamentals access may require a paid plan.</p><label class="field">EODHD API token<input id="token" type="password" autocomplete="off" placeholder="Paste token"></label><div class="dialogactions"><button class="btn" id="cancelSettings">Cancel</button><button class="btn" id="saveSettings">Load data</button></div><p class="help">This dashboard uses the Bank of Canada for CAD/USD. No Bloomberg branding is applied to another provider.</p></dialog>
+<script>
+(()=>{'use strict';
+const RENI_SHARES=556952780;
+// SEC filing dated 17 Aug 2026: 233,543,560 subordinate + 31,323,568 multiple voting shares; one-for-one economic basis.
+const CURA_REPORTED_SHARES={date:'2026-08-17',value:264867128,source:'Curaleaf SEC filing · SVS + MVS'};
+// SEC interim filing published 7 Aug 2025: 670,458,386 SVS + 93,970,705 MVS as of 4 Aug 2025 (before the 1-for-3 split).
+const CURA_2025_SHARES={date:'2025-08-07',value:764429091,source:'Curaleaf SEC filing · SVS + MVS'};
+const dashboardDay=()=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Nicosia',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}`};let TODAY=dashboardDay();
+const $=id=>document.getElementById(id);const SERVER_MODE=location.protocol!=='file:';let token='',forecastAlertShown=false;
+const iso=d=>{const x=new Date(d+'T12:00:00Z');return Number.isNaN(+x)?null:x.toISOString().slice(0,10)};
+const shift=(d,n)=>{const x=new Date(d+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
+const weekday=d=>{const n=new Date(d+'T12:00:00Z').getUTCDay();return n!==0&&n!==6};
+const monthBack=d=>{const x=new Date(d+'T12:00:00Z'),day=x.getUTCDate();x.setUTCDate(1);x.setUTCMonth(x.getUTCMonth()-1);const m=x.getUTCMonth();x.setUTCDate(Math.min(day,new Date(Date.UTC(x.getUTCFullYear(),m+1,0)).getUTCDate()));return x.toISOString().slice(0,10)};
+const yearBack=d=>{const x=new Date(d+'T12:00:00Z');x.setUTCFullYear(x.getUTCFullYear()-1);return x.toISOString().slice(0,10)};
+const nice=d=>d?new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(d+'T12:00:00Z')):'—';
+const chartDate=d=>`${d.slice(8,10)} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][Number(d.slice(5,7))-1]}`;
+const fixed=(v,n)=>Number(v).toLocaleString('en-US',{minimumFractionDigits:n,maximumFractionDigits:n});
+const integer=v=>Math.round(v).toLocaleString('en-US');
+const extraMillions=v=>Math.ceil(v/1e6).toLocaleString('en-US');
+const millionShares=v=>`${fixed(v/1e6,2)} mn shares`;
+const valid=v=>Number.isFinite(Number(v))&&Number(v)>0;
+const latest=(rows,at)=>rows.filter(x=>x.date<=at&&valid(x.value)).sort((a,b)=>b.date.localeCompare(a.date))[0]||null;
+const prior=(rows,date)=>latest(rows,shift(date,-1));
+const pct=(a,b)=>a&&b&&valid(b.value)?(a.value/b.value-1)*100:null;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function card(label,obs,format,source,opts={}){let out=`<article class="card${opts.forecast?' adtv-card':''}"><div class="label">${esc(label)}</div>`;if(obs){const stale=obs.date!==TODAY;const signal=opts.signal?opts.signal(obs.value):'';if(opts.inlineValue)out+='<div class="metric-row">';out+=`<div class="value${stale?' stale':''}${signal?' '+signal:''}${opts.valueClass?' '+opts.valueClass:''}">${format(obs.value)}</div>`;if(opts.afterValue)out+=opts.afterValue;if(opts.inlineValue)out+='</div>';if(opts.warning)out+=`<div class="warning">${esc(opts.warning)}</div>`;if(opts.detail)out+=`<div class="metric-note">${esc(opts.detail)}</div>`;if(opts.changes?.length){out+='<div class="changes">'+opts.changes.map(c=>`<span class="change ${c.value==null?'':c.value<0?'negative':c.value>0?'positive':''}"><span class="tag">${esc(c.name)}</span>${c.value==null?'—':`${c.value>0?'+':''}${fixed(c.value,c.decimals??1)}${c.unit||'%'}`}</span>`).join('')+'</div>'}out+=`<div class="cardbottom"><div class="meta">${esc(source)} · ${nice(obs.date)}${opts.note?' · '+esc(opts.note):''}</div>${stale?`<div class="asof">As of ${nice(obs.date)}</div>`:''}</div>`}else{out+=`<div class="value">—</div><div class="cardbottom"><div class="error">${esc(opts.error||'Source data unavailable')}</div><div class="meta">${esc(source)}</div></div>`}if(opts.history)out+=historyControl(label,opts.history,opts.historyType||'table');if(opts.forecast)out+=forecastControl(opts.forecast);if(opts.stress)out+=forecastControl(opts.stress,true);return out+'</article>'}
+const currencyMark=currency=>({RUB:'₽',USD:'$',CAD:'CAD'})[currency]||currency;
+const money=(currency,dec=2)=>v=>`<span class="currency">${currencyMark(currency)}</span> ${fixed(v,dec)}`;
+const count=v=>integer(v);
+const priceSignal=change=>change==null?'':change>0?'price-up':change<0?'price-down':'';
+const rate=v=>`${fixed(v,2)}<span class="unit">%</span>`;
+const cap=currency=>v=>`<span class="currency">${currencyMark(currency)}</span> ${fixed(v/1e9,1)} <span class="unit">bn</span>`;
+const show=(id,cards)=>$(id).innerHTML=cards.join('');
+const loadingCard=label=>`<article class="card loading-card"><div class="label">${esc(label)}</div><div class="loading-line" aria-hidden="true"></div><div class="loading-caption">Loading market data…</div></article>`;
+const historyFor=(observation,days=10)=>Array.from({length:days},(_,index)=>{const day=shift(TODAY,-index-1),item=observation(day);return {day,...item,asOf:item?.date||null,value:item?.value||'—'}});
+function tablePanels(rows,headers,renderRow){const parts=rows.length>15?[rows.slice(0,15),rows.slice(15)]:[rows];return `<div class="history-panels">${parts.map(part=>`<table><thead><tr>${headers.map(x=>`<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${part.map(renderRow).join('')}</tbody></table>`).join('')}</div>`}
+function dataBarCell(value,values){if(!Number.isFinite(value))return '<td>—</td>';const lo=Math.min(...values),hi=Math.max(...values),ratio=hi===lo?1:Math.max(0,Math.min(1,(value-lo)/(hi-lo))),width=Math.round(18+82*ratio);return `<td class="bar-cell"><div class="bar-content"><span class="bar-number">${fixed(value/1e6,1)}</span><span class="bar-track" aria-hidden="true"><span class="bar-fill" style="width:${width}%"></span></span></div></td>`}
+function chartSvg(rows,key,label,color,decimals=1){const data=[...rows].reverse().map((r,i)=>({index:i,day:r.day,value:Number(r[key])})).filter(x=>Number.isFinite(x.value)&&x.value>0);if(!data.length)return `<p>${esc(label)}: data unavailable</p>`;const values=data.map(x=>x.value),lo=Math.min(...values),hi=Math.max(...values),span=hi-lo||Math.max(hi*.02,.01),bottom=hi===lo?lo-span/2:lo-span*.12,top=hi===lo?hi+span/2:hi+span*.12;const x=i=>58+i*644/Math.max(rows.length-1,1),y=v=>137-(v-bottom)*78/(top-bottom);const path=data.map((p,i)=>`${i?'L':'M'}${x(p.index).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ');return `<div class="chart-title">${esc(label)}</div><div class="chart-scroll"><svg class="chart-svg" viewBox="0 0 760 195" role="img" aria-label="${esc(label)} over the previous ${rows.length} days"><line x1="58" y1="145" x2="702" y2="145" stroke="#b7c3cb"/><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5"/>${data.map(p=>`<circle cx="${x(p.index).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="3.5" fill="${color}"><title>${nice(p.day)}: ${fixed(p.value,decimals)}</title></circle><text x="${x(p.index).toFixed(1)}" y="${(y(p.value)-13).toFixed(1)}" text-anchor="middle" font-size="15" fill="#243742">${fixed(p.value,decimals)}</text>`).join('')}${data.map(p=>`<text x="${x(p.index).toFixed(1)}" y="185" text-anchor="middle" font-size="15" fill="#50616c">${chartDate(p.day)}</text>`).join('')}</svg></div>`}
+function historyControl(label,rows,type){
+  const buttonDays=type==='adtv'?30:rows.length;let content;
+  if(type==='adtv'){
+    const dailyValues=rows.map(row=>row.daily).filter(Number.isFinite),adtvValues=rows.map(row=>row.adtv).filter(Number.isFinite);
+    content=`<table class="adtv-history-table"><thead><tr><th>Date</th><th>Daily turnover, ₽ mn</th><th>20d ADTV, ₽ mn</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${nice(row.day)}</td>${dataBarCell(row.daily,dailyValues)}${dataBarCell(row.adtv,adtvValues)}</tr>`).join('')}</tbody></table><p class="bar-note">Blue bars compare values within each column; longer means higher.</p>`;
+  }else if(type==='chart'){
+    const macroLabels=['USD / RUB','EUR / RUB','CAD / USD','Bank of Russia key rate'];
+    const specs=label==='Close share price · RUB / USD'?[['number','RUB close','#345e91',1],['second','USD close','#428b88',2]]:label==='Close price · CAD / USD'?[['number','CAD close','#345e91',1],['second','USD close','#428b88',1]]:label==='Market capitalization'&&rows.some(row=>Number.isFinite(row.second))?[['number','RUB bn','#345e91',1],['second','USD bn','#428b88',1]]:label==='Fed funds target range'?[['number','Lower bound, %','#345e91',2],['second','Upper bound, %','#428b88',2]]:[['number',label,'#345e91',macroLabels.includes(label)?2:1]];
+    content=specs.map(([key,name,color,decimals])=>chartSvg(rows,key,name,color,decimals)).join('');
+  }else{
+    content=tablePanels(rows,['Date','Value'],row=>`<tr><td>${nice(row.day)}</td><td>${row.value}${row.asOf&&row.asOf!==row.day?`<small>As of ${nice(row.asOf)}</small>`:''}</td></tr>`);
+  }
+  return `<div class="history-wrap"><button class="history-trigger" type="button" aria-label="${buttonDays} day History for ${esc(label)}" aria-expanded="false">${buttonDays}d History</button><div class="history-popover${type==='adtv'?' adtv-popover':''}" popover="manual" role="region" aria-label="History for ${esc(label)}"><button class="popover-close" type="button" aria-label="Close window">×</button><h3>${esc(label)} · ${buttonDays}d History</h3><p>${type==='adtv'?'One calendar month through the latest trading date. Daily cash turnover and the rolling 20-session average.':`Previous ${rows.length} calendar days. Earlier observations show their actual date.`}</p>${content}</div></div>`;
+}
+function forecastControl(forecast,stress=false){const title=stress?'20D ADTV · Stress-test':'20D ADTV · 7d Forecast',button=stress?'Stress-test':'7d Forecast',scenario=stress?`Stress scenario: turnover is fixed for seven trading days at the minimum daily turnover observed from ${nice(forecast.periodStart)} to ${nice(forecast.baseDate)}, ₽ ${fixed(forecast.baseTurnover/1e6,0)} mn.`:`Scenario: turnover is fixed for seven trading days at the latest 7-session average, ₽ ${fixed(forecast.baseTurnover/1e6,0)} mn.`;const content=forecast.rows.length?`<p class="forecast-note">${scenario} Extra needed is calculated sequentially and remains in the adjusted 20-session window on later dates.</p><div class="forecast-scroll"><table class="forecast-table"><thead><tr class="forecast-groups"><th rowspan="2">Date</th><th colspan="2">Baseline</th><th colspan="3">With intervention</th></tr><tr><th>Turnover<span class="table-unit">₽ mn</span></th><th>ADTV<span class="table-unit">₽ mn</span></th><th>Extra<span class="table-unit">₽ mn</span></th><th>Total<span class="table-unit">₽ mn</span></th><th>ADTV<span class="table-unit">₽ mn</span></th></tr></thead><tbody>${forecast.rows.map(row=>`<tr><td>${chartDate(row.day)}</td><td>${fixed(row.daily/1e6,0)}</td><td class="${row.baselineAdtv<60000000?'adtv-risk':''}">${fixed(row.baselineAdtv/1e6,0)}</td><td>${row.extraNeeded>0?extraMillions(row.extraNeeded):'—'}</td><td>${fixed(row.adjustedDaily/1e6,0)}</td><td class="${row.adjustedAdtv<60000000?'adtv-risk':''}">${fixed(row.adjustedAdtv/1e6,0)}</td></tr>`).join('')}</tbody></table></div><p class="bar-note">ADTV below ₽60 mn is shown in dark red. Extra is rounded up to whole ₽ mn. Future exchange holidays are not included.</p>`:'<p>Twenty trading sessions are required before this scenario can be calculated.</p>';const stressLink=stress?'':'<div class="stress-link-row"><button class="open-stress" type="button">Open Stress-test</button></div>';return `<div class="history-wrap ${stress?'stress-wrap':'forecast-wrap'}"><button class="history-trigger ${stress?'stress-trigger':'forecast-trigger'}" type="button" aria-label="${esc(title)}" aria-expanded="false">${button}</button><div class="history-popover forecast-popover" popover="manual" role="region" aria-label="${esc(title)}"><button class="popover-close" type="button" aria-label="Close window">×</button><div class="forecast-popover-head"><h3>${title}</h3>${stressLink}</div>${content}</div></div>`}
+function dataUrl(url){if(!SERVER_MODE)return url;const u=new URL(url);let path;if(u.hostname==='www.cbr.ru'&&u.pathname==='/scripts/XML_daily.asp')path='/api/cbr/daily';else if(u.hostname==='www.cbr.ru'&&u.pathname==='/scripts/XML_dynamic.asp')path='/api/cbr/range';else if(u.hostname==='www.cbr.ru'&&u.pathname==='/DailyInfoWebServ/DailyInfo.asmx')path='/api/cbr/key';else if(u.hostname==='www.bankofcanada.ca')path='/api/boc';else if(u.hostname==='iss.moex.com')path='/api/moex';else if(u.hostname==='fred.stlouisfed.org'&&u.pathname==='/graph/fredgraph.csv')path='/api/fed';else if(u.hostname==='eodhd.com'&&u.pathname==='/api/eod/CURA.TO')path='/api/eod/history';else if(u.hostname==='eodhd.com'&&u.pathname==='/api/v1.1/fundamentals/CURA.TO')path='/api/eod/shares';else throw Error('Unrecognized data source');const out=new URL(path,location.origin);for(const [key,value] of u.searchParams)if(key!=='api_token')out.searchParams.set(key,value);return out}
+function request(url,options={}){return fetch(dataUrl(url),{...options,signal:AbortSignal.timeout(14000)}).then(r=>{if(!r.ok)throw Error(`HTTP ${r.status}`);return r})}
+const xml=s=>{const d=new DOMParser().parseFromString(s,'application/xml');if(d.querySelector('parsererror'))throw Error('Invalid XML');return d};
+function cbrDate(v){const m=String(v||'').match(/^(\d{2})\.(\d{2})\.(\d{4})/);return m?`${m[3]}-${m[2]}-${m[1]}`:null}
+async function cbrFx(){
+  const cbrFormat=date=>`${date.slice(8,10)}/${date.slice(5,7)}/${date.slice(0,4)}`;
+  const dates=Array.from({length:8},(_,i)=>shift(TODAY,-i));
+  const daily=dates.map(async date=>{const u=new URL('https://www.cbr.ru/scripts/XML_daily.asp');u.searchParams.set('date_req',cbrFormat(date));const d=xml(await(await request(u)).text()),effective=cbrDate(d.documentElement.getAttribute('Date'));if(!effective||effective>date)return [];return [...d.querySelectorAll('Valute')].filter(e=>['USD','EUR'].includes(e.querySelector('CharCode')?.textContent)).map(e=>({code:e.querySelector('CharCode').textContent,date:effective,value:Number(e.querySelector('Value').textContent.replace(',','.'))/Number(e.querySelector('Nominal').textContent)}))});
+  const ranges=[['USD','R01235'],['EUR','R01239']].map(async([code,id])=>{const u=new URL('https://www.cbr.ru/scripts/XML_dynamic.asp');u.searchParams.set('date_req1',cbrFormat(shift(TODAY,-45)));u.searchParams.set('date_req2',cbrFormat(TODAY));u.searchParams.set('VAL_NM_RQ',id);const d=xml(await(await request(u)).text());return [...d.querySelectorAll('Record')].map(e=>({code,date:cbrDate(e.getAttribute('Date')),value:Number(e.querySelector('Value')?.textContent.replace(',','.'))/Number(e.querySelector('Nominal')?.textContent)})).filter(x=>iso(x.date)&&valid(x.value))});
+  const settled=await Promise.allSettled([...ranges,...daily]);const rows=settled.flatMap(x=>x.status==='fulfilled'?x.value:[]);if(!rows.length)throw Error('Bank of Russia API returned no readable observations');return [...new Map(rows.map(x=>[x.code+x.date,x])).values()];
+}
+async function cbrKey(){const body=`<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><KeyRateXML xmlns="http://web.cbr.ru/"><fromDate>${shift(TODAY,-45)}T00:00:00</fromDate><ToDate>${TODAY}T23:59:59</ToDate></KeyRateXML></soap:Body></soap:Envelope>`;const res=await request('https://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx',{method:'POST',headers:{'Content-Type':'text/xml; charset=utf-8',SOAPAction:'http://web.cbr.ru/KeyRateXML'},body});const d=xml(await res.text());const rows=[...d.getElementsByTagName('*')].filter(e=>e.localName==='KR').map(e=>{const fields=[...e.children],get=n=>fields.find(f=>f.localName.toLowerCase()===n.toLowerCase())?.textContent;return {date:get('DT')?.slice(0,10),value:Number(get('Rate')?.replace(',','.'))}}).filter(x=>iso(x.date)&&valid(x.value));if(!rows.length)throw Error('Bank of Russia key-rate response contains no observations');return rows}
+async function bocFx(){const u=new URL('https://www.bankofcanada.ca/valet/observations/FXCADUSD/json');u.searchParams.set('start_date',shift(TODAY,-420));u.searchParams.set('end_date',TODAY);const j=await(await request(u)).json();return (j.observations||[]).map(x=>({date:x.d,value:Number(x.FXCADUSD?.v)})).filter(x=>iso(x.date)&&valid(x.value))}
+async function fedRange(){const rows=await(await request('https://fred.stlouisfed.org/graph/fredgraph.csv')).json();if(!Array.isArray(rows))throw Error('Federal Reserve range unavailable');return rows.map(x=>({...x,value:Number(x.upper)})).filter(x=>iso(x.date)&&valid(x.lower)&&valid(x.upper)&&x.upper>=x.lower&&x.date<=TODAY)}
+async function moex(from,to){const u=new URL('https://iss.moex.com/iss/history/engines/stock/markets/shares/boards/TQBR/securities/RENI.json');u.searchParams.set('from',from);u.searchParams.set('till',to);u.searchParams.set('iss.only','history');u.searchParams.set('history.columns','TRADEDATE,CLOSE,VALUE,VOLUME,NUMTRADES');u.searchParams.set('iss.meta','off');const j=await(await request(u)).json(),cols=j.history?.columns||[];return (j.history?.data||[]).map(r=>Object.fromEntries(cols.map((c,i)=>[c,r[i]]))).filter(r=>iso(r.TRADEDATE)&&valid(r.CLOSE)&&Number(r.NUMTRADES)>0).map(r=>({date:r.TRADEDATE,value:Number(r.CLOSE),turnover:Number(r.VALUE),volume:Number(r.VOLUME)}))}
+async function reniHistory(){const ranges=[[shift(TODAY,-90),TODAY],[shift(monthBack(TODAY),-50),monthBack(TODAY)],[shift(yearBack(TODAY),-50),yearBack(TODAY)]];const a=await Promise.all(ranges.map(r=>moex(...r)));return [...new Map(a.flat().map(x=>[x.date,x])).values()].sort((x,y)=>x.date.localeCompare(y.date))}
+async function eodHistory(){const u=new URL('https://eodhd.com/api/eod/CURA.TO');u.searchParams.set('api_token',token);u.searchParams.set('from',shift(TODAY,-420));u.searchParams.set('to',TODAY);u.searchParams.set('fmt','json');u.searchParams.set('period','d');u.searchParams.set('order','a');const j=await(await request(u)).json();if(!Array.isArray(j))throw Error(j.message||'EOD feed unavailable');return j.map(x=>({date:x.date,value:Number(x.close)})).filter(x=>iso(x.date)&&valid(x.value))}
+async function eodShares(){try{const u=new URL('https://eodhd.com/api/v1.1/fundamentals/CURA.TO');u.searchParams.set('api_token',token);u.searchParams.set('filter','outstandingShares');const j=await(await request(u)).json();const o=j.outstandingShares||j;const rows=Object.values(o.quarterly||{}).concat(Object.values(o.annual||{})).map(x=>({date:x.dateFormatted||x.date,value:Number(x.shares),source:'EODHD · reported shares'})).filter(x=>iso(x.date)&&valid(x.value)).sort((a,b)=>a.date.localeCompare(b.date));if(rows.length)return [...rows,CURA_2025_SHARES,CURA_REPORTED_SHARES]}catch(error){console.warn('EODHD share count unavailable; using dated issuer filing',error.message)}return [CURA_2025_SHARES,CURA_REPORTED_SHARES]}
+function renderMacro(cbr,key,boc,fed){
+  const macroFx=(label,rows,format,source)=>{const current=latest(rows,TODAY),before=current&&prior(rows,current.date);return card(label,current,format,source,{changes:[{name:'DoD',value:pct(current,before)}],historyType:'chart',history:historyFor(day=>{const x=latest(rows,day);return x&&{date:x.date,value:format(x.value),number:x.value}})})};
+  const macroRate=(label,rows,format,source)=>{const current=latest(rows,TODAY),before=current&&prior(rows,current.date);return card(label,current,format,source,{changes:[{name:'DoD',value:current&&before?current.value-before.value:null,unit:' pp',decimals:1}],historyType:'chart',history:historyFor(day=>{const x=latest(rows,day);return x&&{date:x.date,value:format(x.value),number:x.value}})})};
+  const f=latest(fed,TODAY),fBefore=f&&prior(fed,f.date);
+  show('macroGrid',[
+    macroFx('USD / RUB',cbr.filter(x=>x.code==='USD'),money('RUB'),'Bank of Russia'),
+    macroFx('EUR / RUB',cbr.filter(x=>x.code==='EUR'),money('RUB'),'Bank of Russia'),
+    macroFx('CAD / USD',boc,money('USD'),'Bank of Canada'),
+    macroRate('Bank of Russia key rate',key,rate,'Bank of Russia'),
+    card('Fed funds target range',f,()=>`${fixed(f.lower,2)}–${fixed(f.upper,2)}<span class="unit">%</span>`,f?.source||'Federal Reserve · FRED DFEDTARL / DFEDTARU',{changes:[{name:'DoD',value:f&&fBefore?f.upper-fBefore.upper:null,unit:' pp',decimals:1}],error:'Federal Reserve range unavailable',historyType:'chart',history:historyFor(day=>{const x=latest(fed,day);return x&&{date:x.date,value:`${fixed(x.lower,2)}–${fixed(x.upper,2)}%`,number:x.lower,second:x.upper}})})
+  ])
+}
+function renderReni(rows,cbr){
+  const current=latest(rows,TODAY),before=current&&prior(rows,current.date),priorMonth=current&&latest(rows,monthBack(current.date)),priorYear=current&&latest(rows,yearBack(current.date));
+  const rubFx=current&&cbr.find(x=>x.code==='USD'&&x.date===current.date),priceUsd=rubFx?current.value/rubFx.value:null;
+  const averageAt=date=>{if(!date)return null;const days=rows.filter(x=>x.date<=date&&Number.isFinite(x.turnover)&&x.turnover>=0&&Number.isFinite(x.volume)&&x.volume>=0).slice(-20);return days.length===20?{date,value:days.reduce((s,x)=>s+x.turnover,0)/20,volume:days.reduce((s,x)=>s+x.volume,0)/20}:null};
+  const avg=averageAt(current?.date),avgBefore=averageAt(before?.date),avgMonth=averageAt(priorMonth?.date),avgYear=averageAt(priorYear?.date);
+  const capNow=current&&{date:current.date,value:current.value*RENI_SHARES};
+  const usdLine=priceUsd?`<div class="subvalue">/ ${money('USD',1)(priceUsd)}</div>`:'<div class="subvalue">/ $ —</div>';
+  const capUsd=priceUsd?priceUsd*RENI_SHARES:null;
+  const capUsdLine=capUsd?`<div class="subvalue">/ ${money('USD',1)(capUsd/1e9)} <span class="unit">bn</span></div>`:'<div class="subvalue">/ $ —</div>';
+  const warning=avg&&avg.value>=50000000&&avg.value<=55000000?`RUB 50mn limit is coming · ₽ ${fixed((avg.value-50000000)/1e6,2)} mn above limit`:null;
+  const priceChanges=[{name:'DoD',value:pct(current,before)},{name:'MoM',value:pct(current,priorMonth)},{name:'YoY',value:pct(current,priorYear)}];
+  const adtvChanges=[{name:'DoD',value:pct(avg,avgBefore)},{name:'MoM',value:pct(avg,avgMonth)},{name:'YoY',value:pct(avg,avgYear)}];
+  const closeHistory=historyFor(day=>{const p=latest(rows,day);if(!p)return null;const fx=cbr.find(x=>x.code==='USD'&&x.date===p.date);return {date:p.date,value:`${money('RUB')(p.value)} / ${fx?money('USD')(p.value/fx.value):'$ —'}`,number:p.value,second:fx?p.value/fx.value:null}});
+  const adtvStart=current?monthBack(current.date):null;
+  const adtvHistory=rows.filter(x=>current&&x.date>=adtvStart&&x.date<=current.date&&Number.isFinite(x.turnover)&&x.turnover>=0).reverse().map(p=>{const a=averageAt(p.date);return {day:p.date,date:p.date,asOf:p.date,daily:p.turnover,adtv:a?.value??null,value:a?.value??'—'}});
+  const capHistory=historyFor(day=>{const p=latest(rows,day);if(!p)return null;const fx=cbr.find(x=>x.code==='USD'&&x.date===p.date),rub=p.value*RENI_SHARES;return {date:p.date,value:`${cap('RUB')(rub)} / ${fx?cap('USD')(rub/fx.value):'$ —'}`,number:rub/1e9,second:fx?rub/fx.value/1e9:null}});
+  const baseDays=current?rows.filter(x=>x.date<=current.date&&Number.isFinite(x.turnover)&&x.turnover>=0).slice(-20):[];
+  const sevenDays=current?rows.filter(x=>x.date<=current.date&&Number.isFinite(x.turnover)&&x.turnover>=0).slice(-7):[];
+  const sevenAverage=sevenDays.length===7?sevenDays.reduce((sum,x)=>sum+x.turnover,0)/7:null;
+  const buildForecast=baseTurnover=>{const result=[];if(baseDays.length!==20||!Number.isFinite(baseTurnover))return result;const baseline20=baseDays.map(x=>x.turnover),adjusted20=baseDays.map(x=>x.turnover),target=60000000*20;for(let day=shift(current.date,1);result.length<7;day=shift(day,1)){if(!weekday(day))continue;baseline20.shift();baseline20.push(baseTurnover);const baselineAdtv=baseline20.reduce((sum,x)=>sum+x,0)/20;adjusted20.shift();const adjustedRemainder=adjusted20.reduce((sum,x)=>sum+x,0),adjustedBeforeExtra=(adjustedRemainder+baseTurnover)/20,requiredTurnover=Math.max(0,target-adjustedRemainder),extraNeeded=adjustedBeforeExtra<60000000?Math.max(0,requiredTurnover-baseTurnover):0,adjustedDaily=baseTurnover+extraNeeded;adjusted20.push(adjustedDaily);result.push({day,daily:baseTurnover,baselineAdtv,adjustedBeforeExtra,requiredTurnover,extraNeeded,adjustedDaily,adjustedAdtv:(adjustedRemainder+adjustedDaily)/20})}return result};
+  const forecastRows=buildForecast(sevenAverage);
+  const forecast={baseDate:current?.date,baseTurnover:sevenAverage,rows:forecastRows};
+  const stressTurnover=adtvHistory.length?Math.min(...adtvHistory.map(x=>x.daily).filter(Number.isFinite)):null;
+  const stress={baseDate:current?.date,periodStart:adtvStart,baseTurnover:stressTurnover,rows:buildForecast(stressTurnover)};
+  const firstBelow60=forecastRows.find(row=>row.baselineAdtv<60000000&&row.extraNeeded>0),stressBelow60=stress.rows.find(row=>row.baselineAdtv<60000000&&row.extraNeeded>0);if(firstBelow60&&!forecastAlertShown){forecastAlertShown=true;const needs=[firstBelow60?.extraNeeded,stressBelow60?.extraNeeded].filter(Number.isFinite).map(v=>Math.ceil(v/1e6)),low=Math.min(...needs),high=Math.max(...needs);$('forecastRequiredAmount').textContent=low===high?`₽${low} mn`:`₽${low}–${high} mn`;$('forecastAlert').showModal()}
+  show('reniGrid',[
+    card('20D ADTV · cash / shares',avg,v=>`${money('RUB',1)(v/1e6)} <span class="unit">mn</span>`,'MOEX · TQBR',{note:'Cash average over 20 trading days',afterValue:avg?`<div class="subvalue">/ ${millionShares(avg.volume)}</div>`:'',inlineValue:true,warning,error:'20 trading days not available',signal:v=>v>50000000?'signal-high':v<50000000?'signal-low':'',changes:adtvChanges,history:adtvHistory,historyType:'adtv',forecast,stress}),
+    card('Close share price · RUB / USD',current,money('RUB',1),'MOEX · TQBR / Bank of Russia FX',{valueClass:'neutral',signal:()=>priceSignal(priceChanges[0].value),afterValue:usdLine,inlineValue:true,changes:priceChanges,note:'Changes in RUB',history:closeHistory,historyType:'chart'}),
+    card('Market capitalization',capNow,cap('RUB'),'MOEX close × issued shares / Bank of Russia FX',{signal:()=>priceSignal(priceChanges[0].value),afterValue:capUsdLine,inlineValue:true,detail:`${integer(RENI_SHARES)} shares`,changes:priceChanges,note:'Changes in RUB',history:capHistory,historyType:'chart'})
+  ])
+}
+function renderCura(prices,fx,shares,reason){
+  const common=prices.filter(p=>fx.some(f=>f.date===p.date)&&p.date<=TODAY),current=latest(common,TODAY),cad=latest(prices,TODAY),usd=current&&{date:current.date,value:current.value*fx.find(f=>f.date===current.date).value};
+  const priceBefore=cad&&prior(prices,cad.date),priceMonth=cad&&latest(prices,monthBack(cad.date)),priceYear=cad&&latest(prices,yearBack(cad.date));
+  const shareFor=date=>latest(shares,date),capitalization=p=>{const s=p&&shareFor(p.date),f=p&&fx.find(x=>x.date===p.date);if(p?.date>='2026-06-05'&&s?.date<'2026-06-05')return null;return s&&f?{date:p.date,value:p.value*f.value*s.value,sharesDate:s.date,shares:s.value}:null};
+  const now=capitalization(current),previous=current&&capitalization(latest(common,shift(current.date,-1))),month=current&&capitalization(latest(common,monthBack(current.date))),year=current&&capitalization(latest(common,yearBack(current.date)));
+  const changes=[{name:'DoD',value:pct(now,previous)},{name:'MoM',value:pct(now,month)}];if(now&&year&&year.date>=shift(yearBack(now.date),-5))changes.push({name:'YoY',value:pct(now,year)});
+  const priceChanges=[{name:'DoD',value:pct(cad,priceBefore)},{name:'MoM',value:pct(cad,priceMonth)}];if(TODAY>='2027-06-05')priceChanges.push({name:'YoY',value:pct(cad,priceYear)});
+  const usdLine=usd&&usd.date===cad?.date?`<div class="subvalue">/ ${money('USD')(usd.value)}</div>`:'<div class="subvalue">/ $ —</div>';
+  const priceHistory=historyFor(day=>{const p=latest(prices,day);if(!p)return null;const f=fx.find(x=>x.date===p.date);return {date:p.date,value:`${money('CAD')(p.value)} / ${f?money('USD')(p.value*f.value):'$ —'}`,number:p.value,second:f?p.value*f.value:null}});
+  const capHistory=historyFor(day=>{const p=latest(common,day),x=capitalization(p);return x&&{date:x.date,value:cap('USD')(x.value),number:x.value/1e9}});
+  show('curaGrid',[
+    card('Close price · CAD / USD',cad,money('CAD'),'EODHD · TSX / Bank of Canada FX',{signal:()=>priceSignal(priceChanges[0].value),afterValue:usdLine,inlineValue:true,changes:priceChanges,note:'Changes in CAD',error:reason,history:priceHistory,historyType:'chart'}),
+    card('Market capitalization',now,cap('USD'),'Close × same-day FX × reported shares',{signal:()=>priceSignal(changes[0].value),detail:now?`${integer(now.shares)} shares`:null,changes,error:reason||'Date-consistent inputs unavailable',note:now?`Shares reported ${nice(now.sharesDate)}${changes.some(c=>c.name==='YoY')?` · YoY base ${nice(year.date)} (shares ${nice(year.sharesDate)})`:''}`:null,history:capHistory,historyType:'chart'})
+  ])
+}
+async function load(){TODAY=dashboardDay();$('dashboardDate').textContent=`Financial Dashboard as of ${new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(TODAY+'T12:00:00Z'))}`;const refresh=$('refreshBtn');if(location.protocol==='file:'){$('status').innerHTML='Open start-dashboard.cmd, then use <a href="http://127.0.0.1:8770/">the local dashboard</a> to load data.';refresh.disabled=true;return}refresh.disabled=true;$('status').textContent='Loading source data…';renderMacro([],[],[],[]);renderReni([],[]);const hasEod=SERVER_MODE||!!token;renderCura([],[],[],hasEod?'Loading…':'Add an EODHD token in Data access');const jobs=await Promise.allSettled([cbrFx(),cbrKey(),bocFx(),reniHistory(),fedRange(),...(hasEod?[eodHistory(),eodShares()]:[])]);const result=i=>jobs[i]?.status==='fulfilled'?jobs[i].value:[];renderMacro(result(0),result(1),result(2),result(4));renderReni(result(3),result(0));const eodError=jobs[5]?.status==='rejected'?`EODHD price feed: ${jobs[5].reason.message}`:jobs[6]?.status==='rejected'?`EODHD shares feed: ${jobs[6].reason.message}`:null;renderCura(result(5),result(2),result(6),hasEod?eodError:'EODHD token required');const failures=jobs.filter(x=>x.status==='rejected').length;const updateTime=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Nicosia'}).format(new Date());$('status').textContent=[failures?`${failures} feeds could not load`:`Checked ${updateTime} Cyprus time`,!hasEod?'Curaleaf requires EODHD token':null].filter(Boolean).join(' · ');refresh.disabled=false}
+function beginLoad(){const job=load();if(location.protocol!=='file:'){show('reniGrid',[loadingCard('Close share price · RUB / USD'),loadingCard('20D ADTV · cash / shares'),loadingCard('Market capitalization')]);show('curaGrid',[loadingCard('Close price · CAD / USD'),loadingCard('Market capitalization')]);show('macroGrid',[loadingCard('USD / RUB'),loadingCard('EUR / RUB'),loadingCard('CAD / USD'),loadingCard('Bank of Russia key rate'),loadingCard('Fed funds target range')])}return job}
+function closePopup(wrap){const popup=wrap.querySelector('.history-popover');if(popup?.matches(':popover-open'))popup.hidePopover();wrap.classList.remove('open');wrap.querySelector('button')?.setAttribute('aria-expanded','false')}
+function positionPopup(wrap){const popup=wrap.querySelector('.history-popover'),button=wrap.querySelector('.history-trigger');if(!popup.matches(':popover-open'))popup.showPopover();const height=popup.getBoundingClientRect().height,rect=button.getBoundingClientRect(),macro=!!wrap.closest('#macroGrid');let top=macro?rect.top-height-7:rect.bottom+7;if(top+height>innerHeight-6)top=rect.top-height-7;popup.style.top=`${Math.max(6,top)}px`}
+document.addEventListener('click',event=>{const close=event.target.closest('.popover-close');if(close){event.preventDefault();event.stopPropagation();closePopup(close.closest('.history-wrap'));return}const stressLink=event.target.closest('.open-stress');if(stressLink){event.preventDefault();event.stopPropagation();closePopup(stressLink.closest('.history-wrap'));document.querySelector('.stress-wrap .stress-trigger')?.click();return}const trigger=event.target.closest('.history-trigger');if(trigger){event.preventDefault();event.stopPropagation();const wrap=trigger.parentElement;if(wrap.classList.contains('open'))return;document.querySelectorAll('.history-wrap').forEach(w=>{if(w!==wrap)closePopup(w)});wrap.classList.add('open');trigger.setAttribute('aria-expanded','true');positionPopup(wrap)}});
+$('closeForecastAlert').onclick=()=>$('forecastAlert').close();
+$('showForecast').onclick=event=>{event.stopPropagation();$('forecastAlert').close();const button=document.querySelector('.forecast-wrap .forecast-trigger');if(button){button.scrollIntoView({block:'center',behavior:'instant'});button.click()}};
+$('dashboardDate').textContent=`Financial Dashboard as of ${new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(TODAY+'T12:00:00Z'))}`;$('settingsBtn').hidden=SERVER_MODE;$('settingsBtn').onclick=()=>$('settings').showModal();$('cancelSettings').onclick=()=>$('settings').close();$('saveSettings').onclick=()=>{token=$('token').value.trim();$('settings').close();beginLoad()};$('refreshBtn').onclick=beginLoad;beginLoad();setInterval(()=>{if(!document.hidden)beginLoad()},15*60*1000);
+})();
+</script></body></html>
+
+
+
+
+
+
+
+
+
+

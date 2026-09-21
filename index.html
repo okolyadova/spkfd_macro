@@ -403,6 +403,12 @@ body{background:radial-gradient(circle at 82% -18%,#e8dbef 0,transparent 38%),#f
 .adtv-card .forecast-wrap{top:54px}
 .adtv-card .stress-wrap{top:94px}
 @media(max-width:590px){.forecast-dialog{padding:25px 18px 22px}.forecast-dialog h2{font-size:16px;line-height:1.45}.adtv-card .forecast-wrap{top:51px}.adtv-card .stress-wrap{top:86px}}
+.adtv-card .changes{flex-wrap:nowrap;gap:0;white-space:nowrap}
+.adtv-card .change{font-size:12px;letter-spacing:-.015em}
+.adtv-card .changes .change + .change::before{margin-left:5px;margin-right:5px}
+.history-popover::backdrop{background:rgba(28,12,42,.58);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.forecast-dialog::backdrop{background:rgba(28,12,42,.62);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+@media(max-width:590px){.adtv-card .changes{padding-right:0}}
 </style>
 </head>
 <body><main class="wrap">

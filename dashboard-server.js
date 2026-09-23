@@ -11,6 +11,7 @@ const PRIVATE_TOKEN_FILE = path.join(__dirname, '..', '..', 'work', '.eodhd-toke
 const token = process.env.EODHD_API_TOKEN ||
   (fs.existsSync(PRIVATE_TOKEN_FILE) ? fs.readFileSync(PRIVATE_TOKEN_FILE, 'utf8').trim() : '');
 const cache = new Map();
+const BUILD = 'renins-2026-09-23-51';
 
 function upstream(requestUrl) {
   const u = new URL(requestUrl, `http://${HOST}:${PORT}`);
@@ -42,6 +43,12 @@ function upstream(requestUrl) {
         if (q.has(key)) out.searchParams.set(key, q.get(key));
       return out;
     }
+    case '/api/moex/intraday': {
+      const out = new URL('https://iss.moex.com/iss/engines/stock/markets/shares/boards/TQBR/securities/RENI.json');
+      for (const key of ['iss.only', 'marketdata.columns', 'iss.meta'])
+        if (q.has(key)) out.searchParams.set(key, q.get(key));
+      return out;
+    }
     case '/api/eod/history': {
       const out = new URL('https://eodhd.com/api/eod/CURA.TO');
       for (const key of ['from', 'to', 'fmt', 'period', 'order'])
@@ -62,6 +69,10 @@ function upstream(requestUrl) {
 
 const server = http.createServer(async (req, res) => {
   const parsed = new URL(req.url, `http://${HOST}:${PORT}`);
+  if (parsed.pathname === '/api/version') {
+    res.writeHead(200, {'Content-Type':'application/json', 'Cache-Control':'no-store'});
+    res.end(JSON.stringify({build:BUILD,app:'Renins Colors',directory:process.env.RENDER?undefined:__dirname}));return;
+  }
   if (parsed.pathname === '/' || parsed.pathname === '/index.html') {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store'});
     fs.createReadStream(HTML).pipe(res);
@@ -125,7 +136,7 @@ const server = http.createServer(async (req, res) => {
     const method = parsed.pathname === '/api/cbr/key' ? 'POST' : 'GET';
     const cacheKey = method === 'GET' ? target.toString() : null;
     const hit = cacheKey && cache.get(cacheKey);
-    const cacheLifetime = parsed.pathname === '/api/moex' ? 60 * 1000 : 15 * 60 * 1000;
+    const cacheLifetime = parsed.pathname === '/api/moex/intraday' ? 15 * 1000 : parsed.pathname === '/api/moex' ? 60 * 1000 : 15 * 60 * 1000;
     if (hit && Date.now() - hit.time < cacheLifetime) {
       res.writeHead(hit.status, hit.headers); res.end(hit.body); return;
     }

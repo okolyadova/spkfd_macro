@@ -1,35 +1,33 @@
-# Financial Market Dashboard — stress edition dated 20 September 2026 · Renins colors
+# Renins Colors — 23 September 2026
 
-This separate version applies a Renaissance Insurance inspired palette based on the current renins.ru visual system: deep purple, vivid lime and clean white surfaces. The standard 7-day forecast window includes an **Open Stress-test** button that opens the stress scenario in its own popover. The report date shown on the page updates each day when data reloads.
+Current build: `renins-2026-09-23-51`.
 
-## Open locally
+## Local use
 
-On Windows, double-click `start-dashboard.cmd`. It starts the local data service and opens <http://127.0.0.1:8772/>. Keep the computer running while viewing this local address.
+Extract all files and open `start-dashboard.cmd`. Keep `start-dashboard.ps1` next to it. Node.js 20 or newer is required; the launcher also detects the bundled Codex runtime.
 
-The EODHD token is read from the existing private `work/.eodhd-token` file two folders above this directory, or from the `EODHD_API_TOKEN` environment variable. Never add a token to the HTML or a GitHub repository.
+The launcher verifies the server build and folder before opening the page. Port 8772 is preferred. If an older process cannot be restarted, port 8872 is used. Follow the address opened by the launcher instead of an old browser tab.
 
-## Update the existing Render link
+Curaleaf requires the `EODHD_API_TOKEN` server environment variable. The existing private `work/.eodhd-token` file two directories above the dashboard is also supported. A newly extracted folder may not have that private fallback. Never upload a token to GitHub or include it in an archive.
 
-To replace the dashboard at `https://new-macro-dashboard.onrender.com/`, upload this directory's `index.html` and `dashboard-server.js` to the **root of the GitHub repository already connected to that Render service**, replacing files with the same names. Commit the changes to the branch connected to Render (usually `main`). Render normally deploys that commit automatically; if auto deploy is disabled, open the existing service's **Deploys** page and choose **Manual Deploy → Deploy latest commit**. The EODHD secret already configured in that service remains there. Do not upload this directory's `render.yaml` for an update of the existing service: it names a different service.
+## Intraday ADTV and forecasts
 
-## Publish separately on Render
+The ADTV target is **RUB 51 million** for both forecast and stress-test. The covenant warning remains **RUB 50 million**.
 
-To publish this version, put this directory's files in a **new** GitHub repository and create a new Render service from its `render.yaml`. Set the secret `EODHD_API_TOKEN` in Render. This version has a distinct Render service name (`new-macro-dashboard-v2`) so it will not replace the existing site.
+MOEX TQBR intraday VALTODAY and VOLTODAY enter the latest 20-session average until an official closed-day history observation is available. The card has a red Preliminary label and pale-yellow values. The first history row is yellow and marked (preliminary). RENI price and capitalization continue to use the latest close.
 
-The Blueprint selects Render's Free web service plan. Render puts idle Free services to sleep and displays its own startup page to the next visitor. The dashboard's loading placeholders appear only after the server has started. A paid web service plan removes idle spin-down; alternatively, a separately hosted static frontend could present a branded waiting screen while this backend wakes up.
+Both scenarios include the current day's actual intraday turnover, Extra needed to reach ADTV 51 million, and seven subsequent trading days. Each intervention remains in the subsequent rolling window. Future baseline turnover uses the latest seven closed sessions; stress uses the exact minimum closed-day turnover in the displayed history month. Intraday turnover is excluded from those assumptions. Forecast dates skip weekends but do not account for future exchange holidays. Extra is calculated without rounding and displayed rounded up to whole millions.
 
-## Data notes
+MOEX is checked on opening, every 30 seconds while visible, and when returning to the tab. Public source data can be delayed: the card displays the MOEX update time, rather than claiming an undelayed exchange feed. An open history or forecast stays open during refresh. Other feeds refresh every 15 minutes.
 
-The dashboard uses MOEX data for RENI, Bank of Russia for USD/RUB, EUR/RUB and the key rate, Bank of Canada for CAD/USD, and EODHD for CURA.TO. Federal Reserve target range is loaded from FRED and checked against the most recent official FOMC statement, which can publish before the FRED daily observation. Curaleaf shares use reported data from EODHD when available, with a dated SEC filing fallback. Missing data shows an error instead of an invented value.
+All popups keep a separate close-button row, heading row, and (where applicable) action row. Main card values have consistent sizes. Macro cards are compact. The white and light-purple Renins palette is retained.
 
-Curaleaf market-cap YoY appears only when both comparison dates have an EODHD TSX close, same-day Bank of Canada CAD/USD, and a previously published share count. The September 2025 fallback is the SEC filing published 7 August 2025: 670,458,386 subordinate plus 93,970,705 multiple voting shares as of 4 August. The 2026 fallback is a post-split count. The calculation uses the unadjusted close and the share count from each period; the June 2026 1-for-3 reverse split does not itself change market capitalization. If a comparable base date is unavailable, the YoY item is omitted.
+## Existing GitHub / Render deployment
 
-Each KPI card has a History control showing the previous 10 calendar days, except RENI 20D ADTV, which covers one calendar month through the latest trading date. Price, FX, policy rate and market capitalization histories use compact charts with one decimal place. The RENI 20D ADTV history recalculates the cash average for each session using that date's latest 20 trading sessions, with weekends and days without trades excluded. Its 7d Forecast fixes turnover at the latest 7-session average. Its Stress-test fixes turnover at the minimum daily turnover observed during the ADTV history month. Future exchange holidays are not known to either scenario, so forecast dates are provisional.
+Replace `index.html` and `dashboard-server.js` in the repository connected to the intended Renins Colors service. Deploy that commit. README and CHANGES are optional documentation updates. Keep the existing EODHD secret. Do not replace the existing service configuration with `render.yaml`, which describes a separate service.
 
-Both ADTV scenarios first report the unadjusted 20-session average based on their fixed turnover assumption. They then report the additional turnover needed on each date to bring the adjusted rolling 20-session average to ₽60 million, followed by adjusted total turnover and ADTV. Forecast table values use whole millions and required extra turnover is rounded upward. Each calculated intervention remains in the adjusted 20-session window on later dates.
+Verify `/api/version`: the build must be `renins-2026-09-23-51`. Verify `/api/moex/intraday`: it must return MOEX data rather than 404. The previously recorded Render address returned 404 during this check, so the current deployment address should be checked in the user's Render account. No remote deployment was performed.
 
-The ADTV history table keeps a light background and shows a blue bar next to each numeric value. In the scenario tables, ADTV values below ₽60 million use dark red text. History, forecast and stress-test windows stay open until the user presses their × button. When the standard seven-day forecast falls below ₽60 million, a centered covenant-risk alert shows the required-turnover range from the standard scenario to the stress scenario. Its “See 7 days forecast” button opens the standard forecast table.
+For a new service, `render.yaml` and `package.json` are included. Configure `EODHD_API_TOKEN` as a server secret.
 
-The Renaissance share-price card also monitors MC 1 at ₽64.5 and both MC 2 credit levels at ₽64.4 and ₽64.1. When the latest close is less than ₽5 above any monitored level, the MC line receives a pink background and the centered warning shows the price buffer to every qualifying level. The warning uses one consistent type style, with the required trading volume and price buffers highlighted in dark red.
-
-The ADTV DoD, MoM and YoY changes are compacted into one line on desktop and mobile. History, forecast and stress-test windows use a dimmed blurred backdrop so the open content remains the clear visual focus.
+See CHANGES.md for the changes and verification notes in Russian.
